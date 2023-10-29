@@ -86,9 +86,11 @@ app.get('/books', async (req, res) => {
   const { date } = req.query
   
 
-  console.log('Get Books', usuario)
+  console.log('Get Books')
   
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+
+  console.log('Mando', usuario.books)
 
   res.json(usuario.books)
 })
