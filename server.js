@@ -81,34 +81,24 @@ const date = new Date(currentDate)
 
 app.get('/books', async (req, res) => {
 
-  // const usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  console.log('START GET BOOKS')
+
   const { date } = req.query
   
 
-
-
+  console.log('Get Books', usuario)
   
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
-console.log(usuario, 'AQUI ESTARA')
+
   res.json(usuario.books)
 })
 
 app.post('/new-book', async (req, res) => {
+
+  console.log('STRAT ADD BOOK')
  
  const { title, total, date } = req.body
  
-  
-//   const fecha = new Date()
-  
-//   const dia = fecha.getDate().toString().padStart(2, '0');
-//   const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses en JavaScript se cuentan desde 0 (enero) a 11 (diciembre)
-//   const año = fecha.getFullYear();
-
-// // Construye la cadena en formato DD-MM-YYYY
-//   const fechaFormateada = `${dia}-${mes}-${año}`;
-
-  //const bookWithThisDate = example.find((book) => { return book.title === title && date === book.date})
-  
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
   const copyOfUser = {...usuario, books: [...usuario.books]}
@@ -126,9 +116,9 @@ app.post('/new-book', async (req, res) => {
   // }
 
   
-  
+  console.log('Add Book')
     
-  res.json(example)
+  res.json(result)
 })
 
 app.post('/books', (req, res) => {
