@@ -60,17 +60,6 @@ const collection = await connectDB()
 //   console.dir(doc);
 // }
 
-
-
-  
-const example = [
-  { title: 'Inspired', total: 394, current: 200, date: '29-10-2023' },
-  { title: 'El poder Del Ahora', total: 394, current: 221, date: '29-10-2023' },
-  { title: 'Inspired', total: 394, current: 100, date: '28-10-2023' },
-]  
-
-
-
 function formatDate(currentDate) {
 const date = new Date(currentDate)
   const day = date.getDate().toString().padStart(2, '0');
@@ -79,6 +68,7 @@ const date = new Date(currentDate)
   return `${day}-${month}-${year}`;
 }
 
+// aqui pido libros y deberia mostrar todos si no hay en el fecha actual
 app.get('/books', async (req, res) => {
 
   console.log('START GET BOOKS')
@@ -89,59 +79,163 @@ app.get('/books', async (req, res) => {
   console.log('Get Books')
   
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  
 
-  console.log('Mando', usuario.books)
+  const copyOfBooks = [...usuario.books]
 
-  res.json(usuario.books)
+    
+  const objetoUnico = {}; // Objeto auxiliar para realizar un seguimiento de títulos únicos
+  const arraySinDuplicados = usuario.books.filter(obj => {
+  const title = obj.title;
+  if (!objetoUnico[title]) {
+    objetoUnico[title] = true;
+    return true; // Mantén el objeto si es la primera vez que se encuentra
+  }
+  return false; // Descarta el objeto si ya se encontró antes
+});
+  
+  
+  const booksFiltered = usuario.books.filter(book => {
+    return book.date === formatDate(date)
+  })
+  
+
+  const response = []
+  
+   copyOfBooks.forEach(book => {
+    
+   
+    if(book.date === formatDate(date)) {
+      response.push(book)
+    }
+  
+  })
+  
+  // para mañana ERROR, mas adelante quiza
+  
+  const getBooksTodayFirstTime = formatDate(date) === formatDate(new Date()) && response.length === 0
+  
+  
+  if(getBooksTodayFirstTime) {
+    
+  res.json(usuario.booksUpdated)
+  
+  return
+  
+  
+  }
+  console.log(usuario.booksUpdated.length, booksFiltered.length, 'LONGITUDES')
+  if(usuario.booksUpdated.length > booksFiltered.length) {
+    
+    const buildBooks = usuario.booksUpdated.map(book => {
+      
+      const findBook = booksFiltered.find(currentBook => currentBook.title === book.title)
+      
+      if(findBook) {
+        return findBook
+      } else {
+        return book
+      }
+    
+    })
+    console.log(buildBooks, 'DEVUELVO ESTO')
+      res.json(buildBooks)
+      return
+    }
+    
+
+  console.log('AQUI ENTRA', booksFiltered)
+  res.json(booksFiltered)
 })
 
 app.post('/new-book', async (req, res) => {
-
-  console.log('STRAT ADD BOOK')
  
  const { title, total, date } = req.body
  
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
-  const copyOfUser = {...usuario, books: [...usuario.books]}
   
-  copyOfUser.books.push({ title, total, current: 0, date: formatDate(date) })
+  const newBook = { title, total, current: 0, date: formatDate(date) }
+  
+  const copyOfUser = {...usuario, books: [...usuario.books], booksUpdaded: [...usuario.booksUpdated, newBook]}
+  copyOfUser.books.push(newBook)
   
   const result = await collection.replaceOne({ email: 'cem20903@gmail.com' }, copyOfUser)
-  
-  
-  // example.push({ title, total, current: 0, date: formatDate(date) })
-  // if(bookWithThisDate) {  
-  //   // Reemplazaremos el valor
-  // } else {
-    
-  // }
-
-  
-  console.log('Add Book')
-    
+      
   res.json(result)
 })
 
-app.post('/books', (req, res) => {
+
+app.post('/all-books', async (req, res) => {
   // Return some sample data as the response
+  const { allBooks } = req.body
   
-  const frontend = {
-    date: '01-01-2023',
-    value: [
-      { name: 'Inspired', total: 394, current: 250 },
-      { name: 'El poder Del Ahora', total: 394, current: 299 }
-    ]
+   
+  let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  
+  const copyOfUser = {...usuario}
+  
+    
+  const updateBooksFormated = allBooks.map(book => {
+    return {...book, date: formatDate(book.date)}
+  })
+  
+  
+  let currentBooks = [...copyOfUser.books]
+  
+  
+  // ACTUALIZO CON LAS FECHAS QUE YA EXISTEN
+  currentBooks = currentBooks.map(currentBook => {
+  
+  const findBookWithSameDate = updateBooksFormated.find(newBook => {
+    const { title, date } = newBook
+    return currentBook.title === title && currentBook.date === date
+  })
+  
+  if(findBookWithSameDate) {
+    return findBookWithSameDate
   }
+  
+  return currentBook
+  
+  })
+  
+  
+  updateBooksFormated.forEach(newBook => {
+  
+  const { title, date } = newBook
+  
+
+  const bookWithDifferentDate = currentBooks.find(currentBook => {
+    return currentBook.title === title && currentBook.date === date
+  })
+  
+  if(bookWithDifferentDate) {
+    return
+  } else {
+    currentBooks.push(newBook)
+  }
+   
+  
+  
+  })
+  
+  
+  // AQUI QUIERO ACTUALIZAR booksUpdaded
+  // updateBooksFormated --> Los libros que me manda el front
+  
+
+  
+    
+  const result = await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...copyOfUser, books: currentBooks })
+
     
   // Recupero de la BBDD
-  const copyOf = {...example}
-  
-  copyOf[frontend.date] = frontend.value
+
   
   
   // Devuelvo el objeto actualizado
-  res.json(example);
+  res.json({});
 });
 
 // Start the server on port configured in .env (recommend port 8000)
