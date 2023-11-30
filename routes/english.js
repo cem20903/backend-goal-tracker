@@ -106,7 +106,7 @@ app.post('/set-records', async (req, res) => {
 
 
 
-app.get('/english-records', async(req, res) => {
+app.get('/english-records', async (req, res) => {
 
   const { date } = req.query
   
@@ -179,8 +179,8 @@ app.get('/summary-records', async (req, res) => {
   
   console.log('Mando summary Records')
   
-  res.json(summary)
-
+  return  res.json(summary)
+ 
 })
 
 app.post('/english-summary-records', async (req, res) => {
