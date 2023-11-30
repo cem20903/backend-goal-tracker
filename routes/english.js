@@ -158,6 +158,8 @@ app.get('/english-records', async(req, res) => {
 
 app.get('/summary-records', async (req, res) => {
 
+  console.log('Pido resumen de todos los records')
+
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
   const { englishRecords } = usuario
@@ -174,6 +176,8 @@ app.get('/summary-records', async (req, res) => {
     }
   
   })
+  
+  console.log('Mando summary Records')
   
   res.json(summary)
 
