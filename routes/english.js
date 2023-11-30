@@ -168,7 +168,7 @@ app.get('/summary-records', async (req, res) => {
   
   const summary = allTitles.map(title => {
     
-    const onlyTitle = filterByMonth.filter(record => record.title === title)
+    const onlyTitle = englishRecords.filter(record => record.title === title)
   
     return {
       title,
