@@ -58,15 +58,14 @@ app.post('/set-records', async (req, res) => {
    const exist = currentRecords.find(currentRecord => currentRecord.title === baseRecord.title)
    
    if(exist) {
-    return {...exist, date: '09-11-2023'} 
+    return {...exist} 
   }
   
-  return {...baseRecord, date: '09-11-2023'}
+  return {...baseRecord}
    
    
    })
    
-   console.log(currentRecords, 'AHORA SI DEBERIA ESTAR BIEN PARA EL 09-11-2023')
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
   
@@ -155,6 +154,29 @@ app.get('/english-records', async(req, res) => {
   }
   
   return res.json(recordsFilterByDate)
+})
+
+app.get('/summary-records', async (req, res) => {
+
+  let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  
+  const { englishRecords } = usuario
+  
+  const allTitles = [...new Set(englishRecords.map(record => record.title))] 
+  
+  const summary = allTitles.map(title => {
+    
+    const onlyTitle = filterByMonth.filter(record => record.title === title)
+  
+    return {
+      title,
+      total: onlyTitle.reduce((acc, record) => record.record + acc, 0 )
+    }
+  
+  })
+  
+  res.json(summary)
+
 })
 
 app.post('/english-summary-records', async (req, res) => {
