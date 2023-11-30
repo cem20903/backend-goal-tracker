@@ -14,7 +14,7 @@ app.get('/books', async (req, res) => {
   
   const copyOfBooks = [...usuario.books]
 
-  const booksFiltered = usuario.books.filter(book => book.date === formatDate(date))
+  // const booksFiltered = usuario.books.filter(book => book.date === formatDate(date))
   
   // const response = []
   
@@ -24,34 +24,34 @@ app.get('/books', async (req, res) => {
   //   }
   // })
   
-  const response = copyOfBooks.filter(book => book.date === formatDate(date))
+  // const response = copyOfBooks.filter(book => book.date === formatDate(date))
   
-  const getBooksTodayFirstTime = formatDate(date) === formatDate(new Date()) && response.length === 0
+  // const getBooksTodayFirstTime = formatDate(date) === formatDate(new Date()) && response.length === 0
   
   
-  if(getBooksTodayFirstTime) {
-    res.json(usuario.booksUpdated)
-    return
-  }
+  // if(getBooksTodayFirstTime) {
+  //   res.json(usuario.booksUpdated)
+  //   return
+  // }
 
-  if(usuario.booksUpdated.length > booksFiltered.length) {
+  // if(usuario.booksUpdated.length > booksFiltered.length) {
     
-    const buildBooks = usuario.booksUpdated.map(book => {
-      const findBook = booksFiltered.find(currentBook => currentBook.title === book.title)
+  //   const buildBooks = usuario.booksUpdated.map(book => {
+  //     const findBook = booksFiltered.find(currentBook => currentBook.title === book.title)
       
-      if(findBook) {
-        return findBook
-      }
-      return book
-    })
+  //     if(findBook) {
+  //       return findBook
+  //     }
+  //     return book
+  //   })
     
-    res.json(buildBooks)
-    return
-  }
+  //   res.json(buildBooks)
+  //   return
+  // }
     
 
-  console.log('Books sended:', booksFiltered)
-  res.json(booksFiltered)
+  console.log('Books sended:', copyOfBooks)
+  res.json(copyOfBooks)
 })
 
 
