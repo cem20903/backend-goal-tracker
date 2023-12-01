@@ -21,6 +21,7 @@ const collection = await connectDB()
 
 app.use('/', routes.books);
 app.use('/', routes.english);
+app.use('/', routes.goals);
 
 
 // Start the server on port configured in .env (recommend port 8000)

@@ -156,8 +156,8 @@ app.get('/summary-records', async (req, res) => {
     
     const onlyTitle = englishRecords.filter(record => {
     
-      console.log(new Date(record.date).getYear() , 2024, 'esto')
-    return record.title === title && new Date(record.date).getYear() === 2024 }
+      
+    return record.title === title && new Date(record.date).getFullYear() === 2024 }
     )
   
     return {
