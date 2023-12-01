@@ -29,27 +29,14 @@ app.post('/set-records', async (req, res) => {
 
   let { currentRecords } = req.body
   
-  // Fix que podre borrar
-  // currentRecords = baseRecords.map(baseRecord => {
-  
-  // const existCurrentRecord = currentRecords.find(currentRecord => currentRecord.title === baseRecord.title)
-  
-  // if(existCurrentRecord) {
-  //   return existCurrentRecord
-  // }
-  
-  // console.log({...baseRecord, date: formatDate(currentRecords[0].date)}, 'ESTO GUARDO')
-  // return {...baseRecord, date: (currentRecords[0].date)}
-  
-  // })
-  
-
   
   currentRecords = currentRecords.map(currentRecord => {
     return {
       ...currentRecord,
-      date: formatDate(currentRecord.date)
+      date: new Date(currentRecord.date)
     }
+    
+    
   
   })
 
@@ -110,7 +97,6 @@ app.get('/english-records', async (req, res) => {
 
   const { date } = req.query
   
-  console.log(formatDate(date), 'LA FECHA CON LA  QUE BUSCO')
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
   
@@ -168,7 +154,11 @@ app.get('/summary-records', async (req, res) => {
   
   const summary = allTitles.map(title => {
     
-    const onlyTitle = englishRecords.filter(record => record.title === title)
+    const onlyTitle = englishRecords.filter(record => {
+    
+      console.log(new Date(record.date).getYear() , 2024, 'esto')
+    return record.title === title && new Date(record.date).getYear() === 2024 }
+    )
   
     return {
       title,
