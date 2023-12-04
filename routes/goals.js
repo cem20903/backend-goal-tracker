@@ -71,6 +71,15 @@ const diaryTasks = [
 })
 
 
+app.get('/get-all-diary', async (req, res) => {
+
+  let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  
+  res.json({ tasks: usuario.diaryTasks })
+
+})
+
+
 app.post('/add-tasks', async (req, res) => {
 
   let { tasks } = req.body
