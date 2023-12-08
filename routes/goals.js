@@ -22,12 +22,11 @@ const baseRecords = [{
 },{
   title: 'Clases',
   record: 99,
-
 }]
 
 
 app.get('/goals', (req, res) => {
-
+console.log('/goals')
 
 const goals = [
   { title: 'recordsEnglish', data: baseRecords }
@@ -38,10 +37,27 @@ res.json(goals)
 })
 
 app.get('/diary-tasks', (req, res) => {
+console.log('/diary-tasks')
 
 const diaryTasks = [
   {
     title: 'Andar 8000 pasos',
+    completed: false,
+  },
+  {
+    title: 'Andar 8500 pasos',
+    completed: false,
+  },
+  {
+    title: 'Andar 9000 pasos',
+    completed: false,
+  },
+  {
+    title: 'Andar 9500 pasos',
+    completed: false,
+  },
+  {
+    title: 'Andar 10000 pasos',
     completed: false,
   },
   {
@@ -65,13 +81,14 @@ const diaryTasks = [
     completed: false,
   },
 ]
- console.log('Llego aqui')
+
   res.json({ diaryTasks })
 
 })
 
 
 app.get('/get-all-diary', async (req, res) => {
+console.log('/get-all-diary')
 
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
@@ -81,24 +98,21 @@ app.get('/get-all-diary', async (req, res) => {
 
 
 app.post('/add-tasks', async (req, res) => {
+console.log('/add-tasks')
 
   let { tasks } = req.body
   
-  console.log(tasks[0], 'LAS TAREAS ANTES')
   
- tasks = tasks.map(task => {
+  tasks = tasks.map(task => {
+    const date = new Date(task.date)
+    date.setHours(0, 0, 0, 0)
  
-  const date = new Date(task.date)
-  
-  date.setHours(0, 0, 0, 0)
- 
-  return {
-    ...task,
-    date,
-  }
+    return {
+      ...task,
+      date,
+    }
  })
  
-  console.log(tasks[0], 'LAS TAREAS')
 
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
@@ -143,13 +157,9 @@ app.post('/add-tasks', async (req, res) => {
   
   
   }
-  
     await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...usuario, diaryTasks: updateTasks })
     return res.json({})
-
-  
-  
-
+    
   })
 
 export default app
