@@ -43,42 +43,57 @@ const diaryTasks = [
   {
     title: 'Andar 8000 pasos',
     completed: false,
+    primary: true
   },
   {
     title: 'Andar 8500 pasos',
     completed: false,
+    primary: false
   },
   {
     title: 'Andar 9000 pasos',
     completed: false,
+    primary: false
   },
   {
     title: 'Andar 9500 pasos',
     completed: false,
+    primary: false
   },
   {
     title: 'Andar 10000 pasos',
     completed: false,
+    primary: false
   },
   {
     title: 'Entrenamiento de Fuerza/Correr',
     completed: false,
+    primary: true
   },
   {
     title: 'Comido menos de 2400 calorias',
     completed: false,
+    primary: true
   },
   {
     title: 'Bajo en Hidratos',
     completed: false,
+    primary: true
   },
   {
     title: 'Ceto',
     completed: false,
+    primary: true
   },
   {
     title: '0 Alcohol',
     completed: false,
+    primary: true
+  },
+  {
+    title: '12 horas de Ayuno',
+    completed: false,
+    primary: true
   },
 ]
 
