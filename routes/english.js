@@ -97,6 +97,8 @@ app.get('/english-records', async (req, res) => {
 
   const { date } = req.query
   
+  
+  
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
   
@@ -109,10 +111,13 @@ app.get('/english-records', async (req, res) => {
       return false
     }
     
+    if(date === undefined) {
+      return new Date(record.date).getFullYear() === 2024
+    }
+
     return record.date === formatDate(date)
   })
   
-  console.log('Los datos QUE MANDO', recordsFilterByDate)
   
   if(recordsFilterByDate.length === 0) {
     res.json([{

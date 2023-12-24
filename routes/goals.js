@@ -37,7 +37,6 @@ res.json(goals)
 })
 
 app.get('/diary-tasks', (req, res) => {
-console.log('/diary-tasks')
 
 const diaryTasks = [
   {
@@ -78,12 +77,12 @@ const diaryTasks = [
   {
     title: 'Bajo en Hidratos',
     completed: false,
-    primary: true
+    primary: false
   },
   {
     title: 'Ceto',
     completed: false,
-    primary: true
+    primary: false
   },
   {
     title: '0 Alcohol',
@@ -93,7 +92,7 @@ const diaryTasks = [
   {
     title: '12 horas de Ayuno',
     completed: false,
-    primary: true
+    primary: false
   },
 ]
 
