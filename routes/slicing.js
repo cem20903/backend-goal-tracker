@@ -1,37 +1,39 @@
 
 import express from "express";
 import collection from '../server.js'
-import { formatDate } from "../utils.js";
+import { uid } from 'uid';
 const app = express();
 
 
 app.post('/slicing-create-new-task', async (req, res) => {
 
-  let { task, name } = req.body
+  const { title, goalName } = req.body
   
-  // task = { title: 'Bajar montaña', completed: true, finishedAt: new Date() }
+  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
+   const { otherGoals } = user
+   
+   otherGoals.push({ title, goalName, completed: false, id: uid(), finishedAt: null })
 
-  const usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
-  
-  const { otherGoals } = usuario
-
-  const slicingToUpdate = otherGoals.find(goal => goal.name === name)
-  
-  const updateGoals = [...slicingToUpdate, task]
-  
-  const updateAllGoals = otherGoals.map(goal => {
-    if(goal.name === name) {
-      return updateGoals
-    }
-    return goal
-  })
-  
-  await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...usuario, otherGoals: updateAllGoals })
+   await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...user, otherGoals })
+   
+   const tasksByGoalName = otherGoals.filter(task => task.goalName === goalName)
+   
+   res.json(tasksByGoalName)
 
 })
 
 
-app.post('/slicing-update-goal', async (req, res) => {
+app.get('/slicing-get-goal-tasks', async (req, res) => {
+
+  const { goalName } = req.query
+
+  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
+
+  const { otherGoals } = user
+
+  const tasksByGoalName = otherGoals.filter(task => task.goalName === goalName)
+
+  res.json(tasksByGoalName)
 
 })
 
@@ -40,3 +42,7 @@ app.post('/slicing-update-goal', async (req, res) => {
 //   let { task, name } = req.body
 
 // })
+
+
+
+export default app
