@@ -3,6 +3,7 @@ import express from "express";
 import collection from '../server.js'
 import { formatDate } from "../utils.js";
 const app = express();
+
 // Get All books by date
 app.get('/books', async (req, res) => {
 
@@ -13,45 +14,25 @@ app.get('/books', async (req, res) => {
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
   const copyOfBooks = [...usuario.books]
-
-  // const booksFiltered = usuario.books.filter(book => book.date === formatDate(date))
-  
-  // const response = []
-  
-  //  copyOfBooks.forEach(book => {
-  //   if(book.date === formatDate(date)) {
-  //     response.push(book)
-  //   }
-  // })
-  
-  // const response = copyOfBooks.filter(book => book.date === formatDate(date))
-  
-  // const getBooksTodayFirstTime = formatDate(date) === formatDate(new Date()) && response.length === 0
-  
-  
-  // if(getBooksTodayFirstTime) {
-  //   res.json(usuario.booksUpdated)
-  //   return
-  // }
-
-  // if(usuario.booksUpdated.length > booksFiltered.length) {
     
-  //   const buildBooks = usuario.booksUpdated.map(book => {
-  //     const findBook = booksFiltered.find(currentBook => currentBook.title === book.title)
-      
-  //     if(findBook) {
-  //       return findBook
-  //     }
-  //     return book
-  //   })
-    
-  //   res.json(buildBooks)
-  //   return
-  // }
-    
+  const titles = [...new Set(copyOfBooks.map(book => book.title))]
+  
+  const updatedBooks = titles.map(title => {
+  
+  const filteredByName = copyOfBooks.filter(book => book.title === title)
+  
+  const sortByLowest = filteredByName.sort((bookA, bookB) =>   parseInt(bookB.current) - parseInt(bookA.current))[0]
+  
+  
+  return {
+    ...sortByLowest,
+    total: parseFloat(sortByLowest.total)
+  }
+  
+  })
+  
 
-  console.log('Books sended:', copyOfBooks)
-  res.json(copyOfBooks)
+  res.json(updatedBooks)
 })
 
 
