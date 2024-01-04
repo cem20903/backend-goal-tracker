@@ -66,7 +66,10 @@ app.post('/slicing-update-tasks', async (req, res) => {
   
   })
   
+
   const joinTasks = [...tasksByGoalName, ...tasksWithDate]  
+  
+  console.log(joinTasks, 'aqui deberia estar en TRUE')
   
   await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...user, otherGoals: joinTasks })
 
