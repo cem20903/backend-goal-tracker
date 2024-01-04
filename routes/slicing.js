@@ -43,6 +43,36 @@ app.get('/slicing-get-goal-tasks', async (req, res) => {
 
 // })
 
+app.post('/slicing-update-tasks', async (req, res) => {
+
+  const { tasks, goalName } = req.body
+  
+  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
+
+  const { otherGoals } = user
+
+  const tasksByGoalName = otherGoals.filter(task => task.goalName !== goalName)
+  
+  const tasksWithDate = tasks.map(task => {
+  
+  if(task.completed && task.finishedAt === null || task.finishedAt === undefined) {
+    return {
+      ...task,
+      finishedAt: new Date()
+    }
+  }
+  
+  return task
+  
+  })
+  
+  const joinTasks = [...tasksByGoalName, ...tasksWithDate]  
+  
+  await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...user, otherGoals: joinTasks })
+
+  res.json(tasksWithDate)
+
+})
 
 
 export default app
