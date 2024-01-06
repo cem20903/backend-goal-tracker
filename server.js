@@ -23,6 +23,7 @@ app.use('/', routes.books);
 app.use('/', routes.english);
 app.use('/', routes.goals);
 app.use('/', routes.slicing);
+app.use('/', routes.summary);
 
 
 // Start the server on port configured in .env (recommend port 8000)
