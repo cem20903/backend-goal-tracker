@@ -78,14 +78,9 @@ app.post('/set-records', async (req, res) => {
     })
   }
   
-  
-
-  console.log('Datos actuales', currentRecords, 'CON ESTO')
-  
+    
   
   await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...usuario, englishRecords: searchAndReplace })
-
-  console.log('Se mando el resultado')
   
   res.json({})
 
@@ -96,7 +91,6 @@ app.post('/set-records', async (req, res) => {
 app.get('/english-records', async (req, res) => {
 
   const { date } = req.query
-  
   
   
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });

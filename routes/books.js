@@ -40,7 +40,7 @@ app.post('/summary-books', async (req, res) => {
 
   const { month } = req.body
       
-  let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  const usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
   const copyOfBooks = [...usuario.books]
   
@@ -78,22 +78,10 @@ app.post('/summary-books', async (req, res) => {
   
   })
   
-  // const totalPages = orderedBooks.reduce((acc, book) => {
-  //   return book.pagesReadByMonth + acc
-  // }, 0)
-  
-  // filterByMonth
-  
-  // Read by Day
-  
+
   
   let percentaje = orderedBooks.map(book => book.percentaje).reduce((acc, percentaje) => acc + parseInt(percentaje), 0) / orderedBooks.length
 
-  console.log(orderedBooks.map(book => book.percentaje), 'ESTO')
-  
-  console.log(percentaje, 'POCENTAJE')
-
-  // const booksFiltered = usuario.books.filter(book => book.date === formatDate(date))
   res.json({ books: orderedBooks, percentajeTotal: percentaje })
 
 
@@ -165,13 +153,6 @@ app.post('/all-books', async (req, res) => {
   
   const result = await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...copyOfUser, books: currentBooks })
   
-
-    
-  // Recupero de la BBDD
-
-  
-  
-  // Devuelvo el objeto actualizado
   res.json({});
 });
 
