@@ -98,7 +98,6 @@ app.get('/summary', async (req, res) => {
   
   // Son ToDo
   
-  const playback = { title: 'PlayBack ',  percentage: calculateOthers(otherGoals, 'PLAYBACK') }
   const work = { title: 'Carrera Laboral', percentage: calculateOthers(otherGoals, 'WORK') }
   const instaAlfara = { title: 'Instagram Alfara', percentage: calculateOthers(otherGoals, 'INSTAALFARA') }
   const first = { title: 'First', percentage: calculateOthers(otherGoals, 'FIRST') }
