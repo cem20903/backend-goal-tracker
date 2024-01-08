@@ -106,7 +106,7 @@ app.get('/summary', async (req, res) => {
   
 
 
-  const results = [CI, weight, economy, work, first, house, playback, sport, readPercantage, instaAlfara, englishPercentage, appCIPercentage, goalTrackerPercentage]
+  const results = [CI, weight, economy, work, first, house, sport, readPercantage, instaAlfara, englishPercentage, appCIPercentage, goalTrackerPercentage]
   
   const total = calculateTotal(results)
 
