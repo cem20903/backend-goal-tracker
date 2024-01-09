@@ -175,6 +175,19 @@ app.get('/summary-by', async (_, res) => {
   
   const englishRecordsByWeek = englishRecordsWithWeekNumber.filter(task => task.week === currentWeek)
   
+  const allTitles = [...new Set(englishRecordsWithWeekNumber.map(record => record.title))]
+  
+  const englishRecordsJoined = allTitles.map(title => {
+  
+    const onlyTitle = englishRecordsByWeek.filter(record => record.title === title )
+    const current = onlyTitle.reduce((acc, record) => record.record + acc, 0 )
+    
+    return {
+      title,
+      record: current
+    }
+  })
+  
   
   const diaryTasksWithWeekNumber = diaryTasks.map(task => {
     return {
@@ -186,7 +199,7 @@ app.get('/summary-by', async (_, res) => {
   const diaryTasksByWeek = diaryTasksWithWeekNumber.filter(task => task.week === currentWeek)
   
   
-  res.json({ diaryTasksByWeek, englishRecordsByWeek, tasksByWeek })
+  res.json({ diaryTasksByWeek, englishRecordsByWeek: englishRecordsJoined, tasksByWeek })
 
 })
 
