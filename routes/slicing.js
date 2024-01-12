@@ -38,6 +38,27 @@ app.get('/slicing-get-goal-tasks', async (req, res) => {
 })
 
 
+
+app.delete('/slicing-delete-task', async (req, res) => {
+
+  const { id, goalName } = req.query
+  
+
+  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
+
+  const { otherGoals } = user
+
+  const tasksWithTaskDeleted = otherGoals.filter(task => task.id !== id)
+  
+  await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...user, otherGoals: tasksWithTaskDeleted })
+  
+  const tasksByGoalName = tasksWithTaskDeleted.filter(task => task.goalName === goalName)
+
+  res.json(tasksByGoalName)
+
+})
+
+
 app.post('/slicing-update-tasks', async (req, res) => {
 
   const { tasks, goalName } = req.body
