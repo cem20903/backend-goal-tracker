@@ -1,7 +1,8 @@
 
 import express from "express";
 import collection from '../server.js'
-import { uid } from 'uid';
+import { calculateRead } from "../utils/calculateBooks.js";
+// import { uid } from 'uid';
 const app = express();
 
 const baseRecords = [{
@@ -25,14 +26,7 @@ const baseRecords = [{
 }]
 
 
-function calculateRead (books) {
 
-  const totalPagesToRead = books.reduce((acc, book) => acc + parseFloat(book.total), 0)
-  const totalPagesReaded = books.reduce((acc, book) => acc + parseFloat(book.current), 0)
-  
-  return Math.round((totalPagesReaded * 100 / totalPagesToRead) * 100) / 100
-  
-}
 
 function calculateOthers (otherGoals, name) {
 

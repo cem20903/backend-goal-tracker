@@ -2,12 +2,11 @@
 import express from "express";
 import collection from '../server.js'
 import { formatDate } from "../utils.js";
+import { calculateRead } from "../utils/calculateBooks.js";
 const app = express();
 
 // Get All books by date
 app.get('/books', async (req, res) => {
-
-  console.log('Get Books')
 
   const { date } = req.query
     
@@ -21,7 +20,7 @@ app.get('/books', async (req, res) => {
   
   const filteredByName = copyOfBooks.filter(book => book.title === title)
   
-  const sortByLowest = filteredByName.sort((bookA, bookB) =>   parseInt(bookB.current) - parseInt(bookA.current))[0]
+  const sortByLowest = filteredByName.sort((bookA, bookB) =>   parseFloat(bookB.current) - parseFloat(bookA.current))[0]
   
   
   return {
@@ -31,8 +30,13 @@ app.get('/books', async (req, res) => {
   
   })
   
+  const finalResponse = {
+    average: calculateRead(copyOfBooks),
+    books: updatedBooks
+  } 
+  
 
-  res.json(updatedBooks)
+  res.json(finalResponse)
 })
 
 
@@ -56,7 +60,7 @@ app.post('/summary-books', async (req, res) => {
   
   const filteredByName = filterByMonth.filter(book => book.title === bookName)
   
-  const sortByLowest = filteredByName.sort((bookA, bookB) =>  parseInt(bookA.current) - parseInt(bookB.current))
+  const sortByLowest = filteredByName.sort((bookA, bookB) =>  parseFloat(bookA.current) - parseFloat(bookB.current))
   
   // const lowestRegister =  parseInt(sortByLowest[0].current)
   
@@ -80,7 +84,7 @@ app.post('/summary-books', async (req, res) => {
   
 
   
-  let percentaje = orderedBooks.map(book => book.percentaje).reduce((acc, percentaje) => acc + parseInt(percentaje), 0) / orderedBooks.length
+  let percentaje = orderedBooks.map(book => book.percentaje).reduce((acc, percentaje) => acc + parseFloat(percentaje), 0) / orderedBooks.length
 
   res.json({ books: orderedBooks, percentajeTotal: percentaje })
 
