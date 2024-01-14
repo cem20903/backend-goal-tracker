@@ -85,9 +85,9 @@ app.get('/summary', async (req, res) => {
   const appCIPercentage = { title: 'App Coeficiente Iron', percentage: calculateOthers(otherGoals, 'APP_CI') } 
   const goalTrackerPercentage = { title: 'App Goal Tracker', percentage: calculateOthers(otherGoals, 'GOAL_TRACKER') }
   
-  const CI = { title: 'Coeficiente Iron (beta)', percentage: 50.58 }
+  const CI = { title: 'Coeficiente Iron (beta)', percentage: 67.95 }
   const weight = { title: 'Peso (beta)', percentage: 50.58 }
-  const economy = { title: 'Economia (beta) ', percentage: 41 }
+  const economy = { title: 'Economia (beta) ', percentage: 50 }
   
   
   // Son ToDo
