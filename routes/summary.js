@@ -1,7 +1,7 @@
 
 import express from "express";
 import collection from '../server.js'
-import { calculateRead } from "../utils/calculateBooks.js";
+import { calculateRead, calculatePagesReadCurrentWeek, calculateLastWeekPagesRead } from "../utils/calculateBooks.js";
 // import { uid } from 'uid';
 const app = express();
 
@@ -141,25 +141,11 @@ function getWeekNumber(date) {
   return weekNumber;
 }
 
-app.get('/summary-by', async (_, res) => {
 
-  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
-  
-  const { otherGoals, englishRecords, diaryTasks } = user
-  
-  const tasksCompleted = otherGoals.filter(task => task.completed)
-  
-  const currentWeek = getWeekNumber(new Date())
-  
-  const tasksWithWeekNumber = tasksCompleted.map(task => {
-    return {
-    ...task,
-    week: getWeekNumber(task.finishedAt)
-    }
-  })
-  
-  const tasksByWeek = tasksWithWeekNumber.filter(task => task.week === currentWeek)
-  
+function getWeekEnglishNumbers (englishRecords, week) {
+
+  const weekFiltered = week ? week : getWeekNumber(new Date())
+
   const englishRecordsWithWeekNumber = englishRecords.map(record => {
     return {
       ...record,
@@ -167,7 +153,7 @@ app.get('/summary-by', async (_, res) => {
     }
   })
   
-  const englishRecordsByWeek = englishRecordsWithWeekNumber.filter(task => task.week === currentWeek)
+  const englishRecordsByWeek = englishRecordsWithWeekNumber.filter(task => task.week === weekFiltered)
   
   const allTitles = [...new Set(englishRecordsWithWeekNumber.map(record => record.title))]
   
@@ -182,21 +168,133 @@ app.get('/summary-by', async (_, res) => {
     }
   })
   
+  return englishRecordsJoined
+}
+
+function getTasksNumbers (otherGoals, week) {
+
+  const weekFiltered = week ? week : getWeekNumber(new Date())
+
+  const tasksCompleted = otherGoals.filter(task => task.completed)
   
-  const diaryTasksWithWeekNumber = diaryTasks.map(task => {
+
+  
+  const tasksWithWeekNumber = tasksCompleted.map(task => {
     return {
     ...task,
-    week: getWeekNumber(task.date)
+    week: getWeekNumber(task.finishedAt)
+    }
+  })
+  
+  const tasksByWeek = tasksWithWeekNumber.filter(task => task.week === weekFiltered)
+  
+  return tasksByWeek
+
+}
+
+
+app.get('/summary-by', async (_, res) => {
+
+  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
+  
+  const { otherGoals, englishRecords, diaryTasks } = user
+  
+  const currentWeek = getWeekNumber(new Date())
+  const tasksByWeek = getTasksNumbers(otherGoals)
+  
+  
+  // Diary Task
+  const diaryTasksWithWeekNumber = diaryTasks.map(task => {
+    return {
+      ...task,
+      week: getWeekNumber(task.date)
     }
   })
   
   const diaryTasksByWeek = diaryTasksWithWeekNumber.filter(task => task.week === currentWeek)
   
+  const englishRecordsJoined = getWeekEnglishNumbers(englishRecords)
   
   res.json({ diaryTasksByWeek, englishRecordsByWeek: englishRecordsJoined, tasksByWeek })
 
 })
 
+
+function buildEnglishComparative (englishRecords) {
+  const currentWeekEnglishRecords = getWeekEnglishNumbers(englishRecords, getWeekNumber(new Date()))
+  const lastWeekEnglishRecords = getWeekEnglishNumbers(englishRecords, getWeekNumber(new Date()) - 1 )
+  
+  const allTitles = [...new Set(englishRecords.map(record => record.title))]
+  
+  const buildComparative = allTitles.map(title => {
+    const currentWeek = currentWeekEnglishRecords.filter(current => current.title === title)[0].record
+    const lastWeek = lastWeekEnglishRecords.filter(current => current.title === title)[0].record
+    
+    return {
+      title,
+      currentWeek,
+      lastWeek
+    }
+  
+  })
+  return buildComparative
+
+}
+
+function getBuildTasksComparative (otherGoals) {
+  const currentWeekTasks = getTasksNumbers(otherGoals, getWeekNumber(new Date()))
+  const lastWeekTasks = getTasksNumbers(otherGoals, getWeekNumber(new Date()) - 1)
+  const allGoalNames = [...currentWeekTasks.map(task => task.goalName), ...lastWeekTasks.map(task => task.goalName)]
+  const uniqueGoalNames = [...new Set(allGoalNames)]
+  
+  const buildTasksComparative = uniqueGoalNames.map(goalName => {
+  
+   const currentWeek = currentWeekTasks.filter(task => task.goalName === goalName).length
+   const lastWeek = lastWeekTasks.filter(task => task.goalName === goalName).length
+  
+   return {
+     title: goalName,
+     currentWeek,
+     lastWeek
+   }
+  })
+  return buildTasksComparative
+
+}
+
+
+app.get('/comparative-weeks', async (req, res) => {
+
+  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
+  
+  const { otherGoals, englishRecords, books } = user
+  
+ const buildComparative = buildEnglishComparative(englishRecords)
+ const buildTasksComparative = getBuildTasksComparative(otherGoals)
+ 
+
+  
+  const buildPagesReadedThisWeek = calculatePagesReadCurrentWeek(books)  
+  const { totalPagesReadedLastWeek, highestPagesReaded } = calculateLastWeekPagesRead(books)
+    
+  let read
+  if(highestPagesReaded.length === 0) {
+    
+    
+    read = [{ 
+      title: 'Paginas Leidas',
+      currentWeek: buildPagesReadedThisWeek,
+      lastWeek: totalPagesReadedLastWeek
+      }]
+  }
+  
+
+  
+  
+
+ 
+ res.json({ english: buildComparative, otherGoals: buildTasksComparative, read })
+})
 
 
 

@@ -80,11 +80,6 @@ const diaryTasks = [
     primary: false
   },
   {
-    title: 'Ceto',
-    completed: false,
-    primary: false
-  },
-  {
     title: '0 Alcohol',
     completed: false,
     primary: true
@@ -102,11 +97,16 @@ const diaryTasks = [
 
 
 app.get('/get-all-diary', async (req, res) => {
-console.log('/get-all-diary')
 
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
-  res.json({ tasks: usuario.diaryTasks })
+  const tasksOrderedByDate = [...usuario.diaryTasks].sort((taskA, taskB) => new Date(taskA.date) - new Date(taskB.date))
+  
+  const temporalyRemoveKetoTask = tasksOrderedByDate.filter(task => task.title !== 'Ceto')
+  
+  const tasksFilterByCurrentMonth = temporalyRemoveKetoTask.filter(task => new Date(task.date).getMonth() === new Date().getMonth()) 
+  
+  res.json({ tasks: tasksFilterByCurrentMonth })
 
 })
 

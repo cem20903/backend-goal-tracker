@@ -3,6 +3,7 @@ import express from "express";
 import collection from '../server.js'
 import { formatDate } from "../utils.js";
 import { calculateRead } from "../utils/calculateBooks.js";
+import { uid } from 'uid';
 const app = express();
 
 // Get All books by date
@@ -159,6 +160,24 @@ app.post('/all-books', async (req, res) => {
   
   res.json({});
 });
+
+
+app.get('/fix-books', async (req, res) => {
+ 
+  
+   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+   
+   const { books } = usuario
+   
+   const copyOfUser = {...usuario}
+   
+   
+   
+   
+  //const result = await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...copyOfUser, books: fixBooks })
+  
+   res.json({ books })
+ })
 
 
 export default app
