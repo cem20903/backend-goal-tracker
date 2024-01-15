@@ -27,7 +27,6 @@ const baseRecords = [{
 
 
 
-
 function calculateOthers (otherGoals, name) {
 
   const appCI = otherGoals.filter(goal => goal.goalName === name)
@@ -103,7 +102,6 @@ app.get('/summary', async (req, res) => {
   const results = [CI, weight, economy, work, first, house, sport, readPercantage, instaAlfara, englishPercentage, appCIPercentage, goalTrackerPercentage]
   
   const total = calculateTotal(results)
-
 
  
   res.json({ results, total })
@@ -289,16 +287,15 @@ app.get('/comparative-weeks', async (req, res) => {
   }
   
 
-  
-  
-
- 
  res.json({ english: buildComparative, otherGoals: buildTasksComparative, read })
 })
 
+app.get('/comparative-percentages', async (req, res) => {
 
-
-
-
+  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
+  const { summary } = user
+  
+  res.json(summary)
+})
 
 export default app
