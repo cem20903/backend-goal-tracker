@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 
 import bodyParser from 'body-parser'
 import connectDB from "./services/connectDB.js";
-import { formatDate } from "./utils.js";
 
 import routes from './routes/index.js'
 

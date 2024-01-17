@@ -1,10 +1,29 @@
-export function calculateRead (books) {
+export function calculateRead (books, allBooks) {
 
   // Aqui no voy uno a uno, sumo todo los totales, luego los current y saco media
   // En el otro calculo cada media y luego calculo la media con eso
-  const totalPagesToRead = books.reduce((acc, book) => acc + parseFloat(book.total), 0)
-  const totalPagesReaded = books.reduce((acc, book) => acc + parseFloat(book.current), 0)
+  const totalPagesToRead = allBooks.reduce((acc, book) => acc + parseFloat(book.total), 0)
   
+  // TODO -> Llevar a funcion, esta repetido
+  const buildCorrectResponse = allBooks.map(book => {
+    const booksById = books.filter(recordBook => recordBook.id === book.id)
+
+    if(booksById.length > 0) {
+      const bestRecordBook = booksById.sort((bookA, bookB) => bookB.current - bookA.current)[0]
+      
+      return bestRecordBook
+    }
+   
+    
+
+    return book
+  })
+  
+  
+  const totalPagesReaded = buildCorrectResponse.reduce((acc, book) => acc + parseFloat(book.current), 0)
+  
+  
+  console.log(totalPagesReaded, 'Y ESTO?')
   return Math.round((totalPagesReaded * 100 / totalPagesToRead) * 100) / 100
   
 }
@@ -22,12 +41,16 @@ function getWeekNumber(date) {
 }
 
 function addCurrentWeekAndFilterByYear (currentRecords) {
+if(!currentRecords.length) {
+  return []
+}
+
   return currentRecords.map(book => {
     return {
       ...book,
       week: getWeekNumber(book.date)
     }
-  }).filter(book => book.date.getFullYear() === 2024)
+  }).filter(book => new Date(book.date).getFullYear() === 2024)
 
 }
 

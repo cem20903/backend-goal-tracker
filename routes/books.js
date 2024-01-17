@@ -1,95 +1,41 @@
 
 import express from "express";
 import collection from '../server.js'
-import { formatDate } from "../utils.js";
 import { calculateRead } from "../utils/calculateBooks.js";
 import { uid } from 'uid';
 const app = express();
+
 
 // Get All books by date
 app.get('/books', async (req, res) => {
 
   const { date } = req.query
     
-  let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  let user = await collection.findOne({ email: 'cem20903@gmail.com' });
   
-  const copyOfBooks = [...usuario.books]
+  const { books, booksToRead } = user
+  
+  const booksWithDate = books.filter(book => {
+    const booksDate = new Date(book.date)
+    booksDate.setHours(0,0,0,0)
     
-  const titles = [...new Set(copyOfBooks.map(book => book.title))]
+    const dateFiltered = new Date(date)
+    dateFiltered.setHours(0,0,0,0)
+   return booksDate.getTime() === dateFiltered.getTime()
+  })
+    
+  const buildCorrectResponse = booksToRead.map(book => {
+    const bookFounded = booksWithDate.find(booksWithDate => booksWithDate.id === book.id)
   
-  const updatedBooks = titles.map(title => {
-  
-  const filteredByName = copyOfBooks.filter(book => book.title === title)
-  
-  const sortByLowest = filteredByName.sort((bookA, bookB) =>   parseFloat(bookB.current) - parseFloat(bookA.current))[0]
-  
-  
-  return {
-    ...sortByLowest,
-    total: parseFloat(sortByLowest.total)
-  }
-  
+    if(bookFounded) {
+      return bookFounded
+    }
+    
+    return book
   })
   
-  const finalResponse = {
-    average: calculateRead(copyOfBooks),
-    books: updatedBooks
-  } 
   
-
-  res.json(finalResponse)
-})
-
-
-app.post('/summary-books', async (req, res) => {
-
-  const { month } = req.body
-      
-  const usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
-  
-  const copyOfBooks = [...usuario.books]
-  
-  const filterByMonth = copyOfBooks.filter((book) => {
-    const fixDateCauseIsANumber = book.date.split('-')[1] - 1
-  return fixDateCauseIsANumber === month
-  } )
-  
-  const listOfBookNames = [...new Set(filterByMonth.map(book => book.title))]
-  
-  
-  const orderedBooks = listOfBookNames.map(bookName => {
-  
-  const filteredByName = filterByMonth.filter(book => book.title === bookName)
-  
-  const sortByLowest = filteredByName.sort((bookA, bookB) =>  parseFloat(bookA.current) - parseFloat(bookB.current))
-  
-  // const lowestRegister =  parseInt(sortByLowest[0].current)
-  
-  const highestRegister = parseInt(sortByLowest[sortByLowest.length - 1].current)
-  
-  // const pagesReadByMonth = highestRegister - lowestRegister
-  
-
-  
-  return {
-    title: bookName,
-    total: filteredByName[0].total,
-    percentaje: highestRegister * 100 / filteredByName[0].total,
-    registers: filteredByName,
-    // lowestRegister,
-    highestRegister,
-    // pagesReadByMonth
-  }
-  
-  })
-  
-
-  
-  let percentaje = orderedBooks.map(book => book.percentaje).reduce((acc, percentaje) => acc + parseFloat(percentaje), 0) / orderedBooks.length
-
-  res.json({ books: orderedBooks, percentajeTotal: percentaje })
-
-
+  res.json({ books: buildCorrectResponse })
 })
 
 app.post('/new-book', async (req, res) => {
@@ -98,7 +44,7 @@ app.post('/new-book', async (req, res) => {
  
   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
   
-  const newBook = { title, total, current: 0, date: formatDate(date) }
+  const newBook = { title, total, current: 0, date: new Date(date) }
   
   const copyOfUser = {...usuario, books: [...usuario.books]}
   copyOfUser.books.push(newBook)
@@ -110,74 +56,49 @@ app.post('/new-book', async (req, res) => {
 })
 
 
-app.post('/all-books', async (req, res) => {
+app.post('/add-books-updated', async (req, res) => {
   
-  const { allBooks } = req.body
+  const { booksUpdated } = req.body
+  // Viene solo los libros modificados con la fecha que hayamos seteado porque al pedirlos tampoco estamos pidiendolos por fecha
   
-   
-  let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  let user = await collection.findOne({ email: 'cem20903@gmail.com' });
   
-  const copyOfUser = {...usuario}
-  
-    
-  const updateBooksFormated = allBooks.map(book => {
-    return {...book, date: formatDate(book.date)}
-  })
+  const { books } = user
   
   
-  let currentBooks = [...copyOfUser.books]
+  const booksUpdatedRecords = [...books, ...booksUpdated]
   
-  currentBooks = currentBooks.map(currentBook => {
-  
-  const findBookWithSameDate = updateBooksFormated.find(newBook => {
-    const { title, date } = newBook
-    return currentBook.title === title && currentBook.date === date
-  })
-  
-  if(findBookWithSameDate) {
-    return findBookWithSameDate
-  }
-  
-  return currentBook
-  
-  })
-  
-  
-  updateBooksFormated.forEach(newBook => {
-  
-  const { title, date } = newBook
-  
-
-  const bookWithDifferentDate = currentBooks.find(currentBook => {
-    return currentBook.title === title && currentBook.date === date
-  })
-  if (!bookWithDifferentDate) {
-    currentBooks.push(newBook);
-  }
-  })
-  
-  const result = await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...copyOfUser, books: currentBooks })
+  await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...user, books: booksUpdatedRecords })
   
   res.json({});
 });
 
+app.get('/books-records', async (req, res) => {
 
-app.get('/fix-books', async (req, res) => {
- 
+  let user = await collection.findOne({ email: 'cem20903@gmail.com' });
   
-   let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
-   
-   const { books } = usuario
-   
-   const copyOfUser = {...usuario}
-   
-   
-   
-   
-  //const result = await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...copyOfUser, books: fixBooks })
+  const copyOfBooks = [...user.books]
   
-   res.json({ books })
- })
+  const { books, booksToRead } = user
+  
+  const buildCorrectResponse = booksToRead.map(book => {
+  
+    const booksById = books.filter(recordBook => recordBook.id === book.id)
+
+    if(booksById.length > 0) {
+      const bestRecordBook = booksById.sort((bookA, bookB) => bookB.current - bookA.current)[0]
+      
+      return bestRecordBook
+    }
+   
+    return book
+  })
+  
+  
+  res.json({ books: buildCorrectResponse, average: calculateRead(copyOfBooks, booksToRead) })
+
+
+})
 
 
 export default app

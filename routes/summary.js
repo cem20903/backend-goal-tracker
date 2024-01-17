@@ -77,9 +77,9 @@ app.get('/summary', async (req, res) => {
   
   const user = await collection.findOne({ email: 'cem20903@gmail.com' });
   
-  const { otherGoals, books, englishRecords } = user
+  const { otherGoals, books, englishRecords, booksToRead } = user
   
-  const readPercantage = { title: 'Lectura', percentage: calculateRead(books) }
+  const readPercantage = { title: 'Lectura', percentage: calculateRead(books, booksToRead) }
   const englishPercentage = { title: 'Ingles', percentage: calculateEnglish(englishRecords) }
   const appCIPercentage = { title: 'App Coeficiente Iron', percentage: calculateOthers(otherGoals, 'APP_CI') } 
   const goalTrackerPercentage = { title: 'App Goal Tracker', percentage: calculateOthers(otherGoals, 'GOAL_TRACKER') }
@@ -279,6 +279,12 @@ app.get('/comparative-weeks', async (req, res) => {
   if(highestPagesReaded.length === 0) {
     
     
+    read = [{ 
+      title: 'Paginas Leidas',
+      currentWeek: buildPagesReadedThisWeek,
+      lastWeek: totalPagesReadedLastWeek
+      }]
+  } else {
     read = [{ 
       title: 'Paginas Leidas',
       currentWeek: buildPagesReadedThisWeek,

@@ -1,7 +1,6 @@
 
 import express from "express";
 import collection from '../server.js'
-import { formatDate } from "../utils.js";
 const app = express();
 
 const baseRecords = [{
@@ -108,8 +107,8 @@ app.get('/english-records', async (req, res) => {
     if(date === undefined) {
       return new Date(record.date).getFullYear() === 2024
     }
-
-    return record.date === formatDate(date)
+    // Corregir
+    return record.date === new Date(date)
   })
   
   
@@ -167,38 +166,6 @@ app.get('/summary-records', async (req, res) => {
   
   return  res.json(summary)
  
-})
-
-app.post('/english-summary-records', async (req, res) => {
-
-  const { month } = req.body
-  
-  let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
-  
-  const { englishRecords } = usuario
-  
-  const filterByMonth = englishRecords.filter((record) => {
-    const fixDateCauseIsANumber = record.date.split('-')[1] - 1
-    return fixDateCauseIsANumber === month
-  } )
-  
-  const allTitles = [...new Set(filterByMonth.map(record => record.title))]
-  
-  
-  const summary = allTitles.map(title => {
-    
-    const onlyTitle = filterByMonth.filter(record => record.title === title)
-  
-    return {
-      title,
-      total: onlyTitle.reduce((acc, record) => record.record + acc, 0 )
-    }
-  
-  })
-  
-  res.json(summary)
-  
-
 })
 
 export default app
