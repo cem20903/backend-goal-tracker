@@ -1,3 +1,23 @@
+const baseRecords = [{
+  title: 'Estudiar',
+  record: 61,
+}, {
+  title: 'Escuchar',
+  record: 2585,
+
+},{
+  title: 'Leer',
+  record: 519,
+
+},{
+  title: 'Escribir',
+  record: 7760,
+
+},{
+  title: 'Clases',
+  record: 99,
+}]
+
 
 function calculateOthers (otherGoals, name) {
 
