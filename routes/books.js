@@ -42,29 +42,29 @@ app.post('/new-book', async (req, res) => {
  
  const { title, total, date } = req.body
  
-  let usuario = await collection.findOne({ email: 'cem20903@gmail.com' });
+  let user = await collection.findOne({ email: 'cem20903@gmail.com' });
   
-  const newBook = { title, total, current: 0, date: new Date(date) }
+  const { booksToRead } = user
   
-  const copyOfUser = {...usuario, books: [...usuario.books]}
-  copyOfUser.books.push(newBook)
+  const newBook = { title, total: parseFloat(total), current: 0, date: new Date(date), id: uid() }
   
-  const result = await collection.replaceOne({ email: 'cem20903@gmail.com' }, copyOfUser)
-      
-  // Ver aqui que carajo hacer, que mando, vuelvo a pedir libros por fecha o reinicio al dia actual?
-  res.json(result)
+  const copyBooksToRead = [...booksToRead]
+  
+  copyBooksToRead.push(newBook)
+  
+  await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...user, booksToRead: copyBooksToRead })
+  
+  res.json(newBook)
 })
 
 
 app.post('/add-books-updated', async (req, res) => {
   
   const { booksUpdated } = req.body
-  // Viene solo los libros modificados con la fecha que hayamos seteado porque al pedirlos tampoco estamos pidiendolos por fecha
   
   let user = await collection.findOne({ email: 'cem20903@gmail.com' });
   
   const { books } = user
-  
   
   const booksUpdatedRecords = [...books, ...booksUpdated]
   
@@ -99,6 +99,5 @@ app.get('/books-records', async (req, res) => {
 
 
 })
-
 
 export default app

@@ -1,3 +1,5 @@
+import { getWeekNumber } from './dates.js'
+
 export function calculateRead (books, allBooks) {
 
   // Aqui no voy uno a uno, sumo todo los totales, luego los current y saco media
@@ -22,23 +24,10 @@ export function calculateRead (books, allBooks) {
   
   const totalPagesReaded = buildCorrectResponse.reduce((acc, book) => acc + parseFloat(book.current), 0)
   
-  
-  console.log(totalPagesReaded, 'Y ESTO?')
   return Math.round((totalPagesReaded * 100 / totalPagesToRead) * 100) / 100
   
 }
 
-
-function getWeekNumber(date) {
-  const target = new Date(date);
-  target.setHours(0, 0, 0, 0);
-
-  target.setDate(target.getDate() + 4 - (target.getDay() || 7));
-  const yearStart = new Date(target.getFullYear(), 0, 1);
-  const weekNumber = Math.ceil(((target - yearStart) / 86400000 + 1) / 7);
-
-  return weekNumber;
-}
 
 function addCurrentWeekAndFilterByYear (currentRecords) {
 if(!currentRecords.length) {
@@ -78,19 +67,10 @@ export function calculatePagesReadCurrentWeek(books) {
   
   const hasNotRegistry = !booksReadedLastWeek && !highestPagesReaded
   
-  if(hasNotRegistry) {
   
     return {
       title: bookTitle,
-      totalPagesReaded: booksReadedThisWeek ? booksReadedThisWeek.current : 0
-    } 
-    }
-  
-
-    
-    return {
-      title: bookTitle,
-      totalPagesReaded: 0,
+      totalPagesReaded: booksReadedThisWeek ? booksReadedThisWeek.current : 0,
       default: true
     }
   
@@ -101,10 +81,6 @@ export function calculatePagesReadCurrentWeek(books) {
 
   return sumTotalReadedThisWeek
 }
-
-
-
-
 
 
 export function calculateLastWeekPagesRead (books) {
