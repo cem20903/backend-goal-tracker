@@ -1,3 +1,6 @@
+import { getWeekNumber } from './dates.js'
+
+
 const baseRecords = [{
   title: 'Estudiar',
   record: 61,

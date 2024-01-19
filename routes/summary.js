@@ -1,9 +1,10 @@
 
 import express from "express";
 import collection from '../server.js'
-import { calculateRead, calculatePagesReadCurrentWeek, calculateLastWeekPagesRead } from "../utils/calculateBooks.js";
+import { calculateRead } from "../utils/calculateBooks.js";
 import { calculateOthers, calculateTotal, calculateEnglish, getWeekEnglishNumbers, getTasksNumbers, buildEnglishComparative, getBuildTasksComparative  } from "../utils/calculateSummary.js";
 import { getWeekNumber } from '../utils/dates.js'
+import comparativeWeeks from "../controllers/comparativeWeeks.js";
 
 const app = express();
 
@@ -85,28 +86,7 @@ app.get('/summary-by', async (_, res) => {
 
 })
 
-app.get('/comparative-weeks', async (req, res) => {
-
-  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
-  
-  const { otherGoals, englishRecords, books } = user
-  
- const buildComparative = buildEnglishComparative(englishRecords)
- const buildTasksComparative = getBuildTasksComparative(otherGoals)
- 
-  
-  const buildPagesReadedThisWeek = calculatePagesReadCurrentWeek(books)  
-  const { totalPagesReadedLastWeek, highestPagesReaded } = calculateLastWeekPagesRead(books)
-    
-
-  const read = [{ 
-      title: 'Paginas Leidas',
-      currentWeek: buildPagesReadedThisWeek,
-      lastWeek: totalPagesReadedLastWeek
-  }]
-  
- res.json({ english: buildComparative, otherGoals: buildTasksComparative, read })
-})
+app.get('/comparative-weeks', comparativeWeeks)
 
 app.get('/comparative-percentages', async (req, res) => {
 

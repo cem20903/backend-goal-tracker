@@ -44,53 +44,40 @@ if(!currentRecords.length) {
 }
 
 
+export function booksPagesReadedByWeek (books, week) {
+  const buildPagesReadedLastWeek = addCurrentWeekAndFilterByYear(books)
 
-export function calculatePagesReadCurrentWeek(books) {
+  // Sacamos el numero de la semana pasada
+  const lastWeek = week
   
-  const bookTitles = [...new Set(books.map(book => book.title))]
-  const currentWeek = getWeekNumber(new Date())
+  // Registros de esta semana
+  const currentWeeksBooks = buildPagesReadedLastWeek.filter(book => book.week === lastWeek)
+  
+  // Libros anteriores a esta semana
+  const beforeRecordBooks = buildPagesReadedLastWeek.filter(book => book.week < lastWeek)
+  
+  
+  // Ids de libros leidos esta semana
+  const uniqueBookId = [...new Set(currentWeeksBooks.map(book => book.id))]
+  
+  const calculate = uniqueBookId.map(id => {
+  
+    const currentBook = currentWeeksBooks.filter(book => book.id === id).sort((bookA, bookB) => bookB.current - bookA.current)[0] 
+  
+    // Registros anteriores por libro
+    const booksById = beforeRecordBooks.filter(book => book.id === id )
+    const highestRecordBookById = booksById.sort((bookA, bookB) => bookB.current - bookA.current)[0] 
     
-  const totalReaded = bookTitles.map(bookTitle => {
+    const recordIfIreadedThisBookBefore = highestRecordBookById ? highestRecordBookById.current : 0   
+    const totalReaded = currentBook.current - recordIfIreadedThisBookBefore
   
     
-    const currentRecords = books.filter(book => book.title === bookTitle)
-    const booksWithCorrectDate = addCurrentWeekAndFilterByYear(currentRecords)
-    
-    
-  
-  
-  const booksReadedThisWeek = booksWithCorrectDate.filter(book => book.week === currentWeek).sort((bookA, bookB) => bookB.current - bookA.current)[0]
-    
-  const booksReadedLastWeek = booksWithCorrectDate.filter(book => book.week === currentWeek - 1).sort((bookA, bookB) => bookA.current - bookB.current)[0]
-  
-  const highestPagesReaded = booksWithCorrectDate.filter(book => book.week !== currentWeek).sort((bookA, bookB) => bookA.current - bookB.current)[0]
-  
-  const hasNotRegistry = !booksReadedLastWeek && !highestPagesReaded
-  
-  
     return {
-      title: bookTitle,
-      totalPagesReaded: booksReadedThisWeek ? booksReadedThisWeek.current : 0,
-      default: true
+      title: currentBook.title, 
+      totalReaded,
+      weekNumber: week  
     }
-  
   })
   
-  
-  const sumTotalReadedThisWeek = totalReaded.reduce((acc, book) => acc + book.totalPagesReaded, 0)
-
-  return sumTotalReadedThisWeek
-}
-
-
-export function calculateLastWeekPagesRead (books) {
-  // Este solo esta funcionando por que no hay registros anteriores
-  const buildPagesReadedLastWeek = addCurrentWeekAndFilterByYear(books)
-  const lastWeek = getWeekNumber(new Date()) - 1 
-  const removeRecordsAfterTheWeekINeedToCalcule = buildPagesReadedLastWeek.filter(book => book.week <= lastWeek)
-  const highestPagesReaded = removeRecordsAfterTheWeekINeedToCalcule.filter(book => book.week !== lastWeek)
-  const totalPagesReadedLastWeek = removeRecordsAfterTheWeekINeedToCalcule.reduce((acc, book) => acc + book.current, 0)
-  
-  return { totalPagesReadedLastWeek, highestPagesReaded }
-
+  return calculate.reduce((acc, book) => acc + book.totalReaded, 0)
 }
