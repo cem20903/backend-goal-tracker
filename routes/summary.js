@@ -5,6 +5,7 @@ import { calculateRead } from "../utils/calculateBooks.js";
 import { calculateOthers, calculateTotal, calculateEnglish, getWeekEnglishNumbers, getTasksNumbers, buildEnglishComparative, getBuildTasksComparative  } from "../utils/calculateSummary.js";
 import { getWeekNumber } from '../utils/dates.js'
 import comparativeWeeks from "../controllers/comparativeWeeks.js";
+import comparativeWeeeksAllTime from '../controllers/comparativeWeeeksAllTime.js'
 
 const app = express();
 
@@ -19,9 +20,9 @@ app.get('/summary', async (req, res) => {
   const appCIPercentage = { title: 'App Coeficiente Iron', percentage: calculateOthers(otherGoals, 'APP_CI') } 
   const goalTrackerPercentage = { title: 'App Goal Tracker', percentage: calculateOthers(otherGoals, 'GOAL_TRACKER') }
   
-  const CI = { title: 'Coeficiente Iron (beta)', percentage: 67.95 }
-  const weight = { title: 'Peso (beta)', percentage: 50.58 }
-  const economy = { title: 'Economia (beta) ', percentage: 50 }
+  const CI = { title: 'Coeficiente Iron (beta)', percentage: 72.37 }
+  const weight = { title: 'Peso (beta)', percentage: 46 }
+  const economy = { title: 'Economia (beta) ', percentage: 51 }
   
   
   // Son ToDo
@@ -51,7 +52,9 @@ app.post('/save-summary', async (req, res) => {
   
   const { summary } = user
   
-  summary.push({ summary: currentSummary, date: new Date() })
+  const average = currentSummary.reduce((acc, record) => acc + record.percentage , 0) / currentSummary.length
+  
+  summary.push({ summary: currentSummary, date: new Date(), average })
   
   
   await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...user, summary })
@@ -95,5 +98,8 @@ app.get('/comparative-percentages', async (req, res) => {
   
   res.json(summary)
 })
+
+app.get('/comparative-weeks-all-time', comparativeWeeeksAllTime)
+
 
 export default app
