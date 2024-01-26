@@ -45,17 +45,7 @@ const diaryTasks = [
     primary: true
   },
   {
-    title: 'Andar 8500 pasos',
-    completed: false,
-    primary: false
-  },
-  {
     title: 'Andar 9000 pasos',
-    completed: false,
-    primary: false
-  },
-  {
-    title: 'Andar 9500 pasos',
     completed: false,
     primary: false
   },
