@@ -112,7 +112,7 @@ app.get('/comparative-weeks-all-time', comparativeWeeeksAllTime)
 
 app.get('/info-ci', async (req, res) => {
 
-  const response = await fetch('http://localhost:4000/gt/train/records')
+  const response = await fetch('https://fitnessworkout.onrender.com/gt/train/records')
   const infoCI = await response.json()
   
   const { strongRecords, aerobicRecords, powerRecords } = infoCI
