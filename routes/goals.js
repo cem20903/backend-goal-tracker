@@ -39,45 +39,89 @@ res.json(goals)
 app.get('/diary-tasks', (req, res) => {
 
 const diaryTasks = [
-  {
-    title: 'Andar 8000 pasos',
-    completed: false,
-    primary: true
-  },
-  {
-    title: 'Andar 9000 pasos',
-    completed: false,
-    primary: false
-  },
+  // {
+  //   title: 'Andar 8000 pasos',
+  //   completed: false,
+  //   primary: true,
+  //   id: 'STEPS_8000'
+  // },
+  // {
+  //   title: 'Andar 9000 pasos',
+  //   completed: false,
+  //   primary: false,
+  //   id: 'STEPS_9000'
+  // },
   {
     title: 'Andar 10000 pasos',
     completed: false,
-    primary: false
+    primary: true,
+    id: 'STEPS_10000'
+  },
+  {
+    title: 'Andar 12000 pasos',
+    completed: false,
+    primary: false,
+    id: 'STEPS_12000'
+  },
+  {
+    title: 'Andar 15000 pasos',
+    completed: false,
+    primary: false,
+    id: 'STEPS_15000'
   },
   {
     title: 'Entrenamiento de Fuerza/Correr',
     completed: false,
-    primary: true
+    primary: true,
+    id: 'TRAIN'
   },
   {
-    title: 'Comido menos de 2400 calorias',
+    title: 'Sesion de HIIT',
     completed: false,
-    primary: true
+    primary: true,
+    id: 'HIIT'
+  },
+  {
+    title: 'Sesion 5min Comba',
+    completed: false,
+    primary: true,
+    id: 'HIIT'
+  },
+  {
+    title: 'Sesion 10min Comba',
+    completed: false,
+    primary: false,
+    id: 'HIIT'
+  },
+  {
+    title: 'Sesion 15min Comba',
+    completed: false,
+    primary: false,
+    id: 'HIIT'
+  },
+  {
+    title: 'Comido menos de 2600 calorias',
+    completed: false,
+    primary: true,
+    id: 'FEEDING'
   },
   {
     title: 'Bajo en Hidratos',
     completed: false,
-    primary: false
+    primary: false,
+    id: 'LOW_CARBOS'
   },
   {
     title: '0 Alcohol',
     completed: false,
-    primary: true
+    primary: true,
+    id: 'NO_ALCOHOL'
   },
   {
     title: '12 horas de Ayuno',
     completed: false,
-    primary: false
+    primary: false,
+    id: 'FAST'
   },
 ]
 

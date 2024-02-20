@@ -24,6 +24,7 @@ app.use('/', routes.goals);
 app.use('/', routes.slicing);
 app.use('/', routes.summary);
 app.use('/', routes.backoffice);
+app.use('/', routes.HS);
 
 
 // Start the server on port configured in .env (recommend port 8000)

@@ -4,6 +4,7 @@ import goals from './goals.js'
 import slicing from './slicing.js'
 import summary from './summary.js'
 import backoffice from './backoffice.js'
+import HS from './HS.js'
 
 
 
@@ -13,5 +14,6 @@ export default {
   goals,
   slicing,
   summary,
-  backoffice
+  backoffice,
+  HS
 }
