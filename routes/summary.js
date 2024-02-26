@@ -10,6 +10,10 @@ import fetch from "node-fetch";
 
 const app = express();
 
+const BACK_CI_URL = 'https://fitnessworkout.onrender.com'
+
+// const BACK_CI_URL = 'http://localhost:4000'
+
 app.get('/summary', async (req, res) => {
   
   const user = await collection.findOne({ email: 'cem20903@gmail.com' });
@@ -22,7 +26,7 @@ app.get('/summary', async (req, res) => {
   const goalTrackerPercentage = { title: 'App Goal Tracker', percentage: calculateOthers(otherGoals, 'GOAL_TRACKER') }
   
   
-  const response = await fetch('https://fitnessworkout.onrender.com/info-for-gt')
+  const response = await fetch(`${BACK_CI_URL}/info-for-gt`)
   const { percentajeWeight, percentajeCI } = await response.json()
   
   console.log(percentajeWeight, percentajeCI, 'ESTO')
@@ -112,13 +116,13 @@ app.get('/comparative-weeks-all-time', comparativeWeeeksAllTime)
 
 app.get('/info-ci', async (req, res) => {
 
-  const response = await fetch('https://fitnessworkout.onrender.com/gt/train/records')
+  const response = await fetch(`${BACK_CI_URL}/gt/train/records`)
   const infoCI = await response.json()
   
-  const { strongRecords, aerobicRecords, powerRecords } = infoCI
+  const { strongRecords, aerobicRecords, powerRecords, totalCI } = infoCI
     
   const names = {
-    PRESS_BANCA: 'Press banca',
+    PRESS_BANCA: 'Press banca', 
     PRESS_MILITAR: 'Press militar',
     PESO_MUERTO: 'Peso muerto',
     DOMINADAS: 'Dominadas',
@@ -131,7 +135,7 @@ app.get('/info-ci', async (req, res) => {
   
   return {
     title: names[exercise],
-    total: goal,
+    total: Math.round(goal * 100) / 100,
     current: record,
     percentaje: Math.round(ci * 100) / 100
   }
@@ -157,7 +161,7 @@ app.get('/info-ci', async (req, res) => {
   allRecords.push(buildAerobicRecords)
 
 
-  res.json({ allRecords })
+  res.json({ allRecords, totalCI })
 
 })
 
