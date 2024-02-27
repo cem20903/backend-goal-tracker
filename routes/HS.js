@@ -53,7 +53,7 @@ const recordsWithUpdates = HSRecords.map(record => {
   const sumTotal = totalRecords.reduce((acc, record) => acc + record.record, 0)
   
   const percentaje = Math.round((sumTotal * 100 / record.record) * 100) / 100
-// El current tendria que ser 0 o el que haya
+
   return {
     ...record,
     record: sumTotal,
@@ -142,8 +142,6 @@ app.post('/set-hs-records', async (req, res) => {
 
   let { currentRecords } = req.body
   
-  console.log(currentRecords, 'ESTO DE AQUI')
-  
   currentRecords = currentRecords.map(currentRecord => {
     return {
       ...currentRecord,
@@ -167,9 +165,7 @@ app.post('/set-hs-records', async (req, res) => {
    
    
    })
-   
-
-  
+     
   
   let currentHSRecords = [...HSRecordsTracking]
   
