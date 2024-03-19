@@ -73,12 +73,6 @@ app.get("/diary-tasks", (req, res) => {
 			id: "TRAIN",
 		},
 		{
-			title: "Sesion de HIIT",
-			completed: false,
-			primary: true,
-			id: "HIIT",
-		},
-		{
 			title: "Sesion 5min Comba",
 			completed: false,
 			primary: true,
@@ -113,12 +107,6 @@ app.get("/diary-tasks", (req, res) => {
 			completed: false,
 			primary: true,
 			id: "NO_ALCOHOL",
-		},
-		{
-			title: "12 horas de Ayuno",
-			completed: false,
-			primary: false,
-			id: "FAST",
 		},
 	];
 
