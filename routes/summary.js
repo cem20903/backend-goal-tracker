@@ -18,6 +18,18 @@ import {
 
 const app = express();
 
+function calculateRecurrentPayLoan() {
+	const monthlyPaymentWithoutInterest = 188;
+	return (new Date().getMonth() + 1) * monthlyPaymentWithoutInterest;
+}
+
+const calculateEconomy = () => {
+	const payCurrent = calculateRecurrentPayLoan();
+	const saveMoneyPercentaje = 100;
+	const debt = (payCurrent * 100) / 16934;
+	return Math.round(((saveMoneyPercentaje + debt) / 2) * 100) / 100;
+};
+
 function calculateStrikesHS(HSRecords, HSRecordsTracking) {
 	const recordsWithUpdates = HSRecords.map((record) => {
 		const totalRecords = HSRecordsTracking.filter(
@@ -71,6 +83,29 @@ app.get("/info-weight", async (req, res) => {
 	res.json({ infoWeight });
 });
 
+app.get("/info-economy", async (req, res) => {
+	const totalLoanDebt = 16934;
+	const percentajeLoan =
+		Math.round(((calculateRecurrentPayLoan() * 100) / totalLoanDebt) * 100) /
+		100;
+
+	16934 - 100;
+
+	const infoEconomy = {
+		tableInfo: [
+			{
+				title: "Deuda",
+				total: totalLoanDebt,
+				current: calculateRecurrentPayLoan(),
+				percentaje: percentajeLoan,
+			},
+			{ title: "Ahorros", total: 5000, current: 5000, percentaje: 100 },
+		],
+		average: calculateEconomy(),
+	};
+	res.json({ infoEconomy });
+});
+
 app.get("/summary", async (req, res) => {
 	const user = await collection.findOne({ email: "cem20903@gmail.com" });
 
@@ -118,13 +153,6 @@ app.get("/summary", async (req, res) => {
 		percentage: percentajeWeight,
 		primary: true,
 		name: "WEIGHT",
-	};
-
-	const calculateEconomy = () => {
-		const payCurrent = (new Date().getMonth() + 1) * 188;
-		const saveMoney = 100;
-		const debt = (payCurrent * 100) / 16934;
-		return Math.round(((saveMoney + debt) / 2) * 100) / 100;
 	};
 
 	const economy = {

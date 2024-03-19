@@ -222,25 +222,25 @@ app.get("/hs-diary-tasks", (req, res) => {
 			title: "Cualificar",
 			completed: false,
 			primary: true,
-			id: "EXERCISE_QUALIFY",
+			id: "QUALIFY",
 		},
 		{
 			title: "Sexualizar",
 			completed: false,
 			primary: true,
-			id: "EXERCISE_QUALIFY",
+			id: "SEX",
 		},
 		{
-			title: "Ejemplo Cualificar",
+			title: "Imagenes con Palabras",
 			completed: false,
 			primary: true,
-			id: "EXAMPLE_QUALIFY",
+			id: "WORDS_PICTURES",
 		},
 		{
-			title: "Ejemplo Sexualizar",
+			title: "Recitar",
 			completed: false,
 			primary: true,
-			id: "EXAMPLE_SEX",
+			id: "READ",
 		},
 	];
 
