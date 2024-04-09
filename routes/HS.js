@@ -23,15 +23,14 @@ app.get("/hs-books-records", async (req, res) => {
 		return book;
 	});
 
-	const totalPages = HSBooks.map((book) => book.total).reduce(
+	const totalPages = HSBooksToRead.map((book) => book.total).reduce(
 		(acc, pages) => acc + pages,
 		0
 	);
 
-	const totalCurrent = HSBooks.map((book) => book.current).reduce(
-		(acc, pages) => acc + pages,
-		0
-	);
+	const totalCurrent = buildCorrectResponse
+		.map((book) => book.current)
+		.reduce((acc, pages) => acc + pages, 0);
 
 	const average = Math.round(((totalCurrent * 100) / totalPages) * 100) / 100;
 
@@ -216,40 +215,17 @@ app.post("/set-hs-records", async (req, res) => {
 	res.json({});
 });
 
-app.get("/hs-diary-tasks", (req, res) => {
-	const diaryTasks = [
-		{
-			title: "Cualificar",
-			completed: false,
-			primary: true,
-			id: "QUALIFY",
-		},
-		{
-			title: "Sexualizar",
-			completed: false,
-			primary: true,
-			id: "SEX",
-		},
-		{
-			title: "Imagenes con Palabras",
-			completed: false,
-			primary: true,
-			id: "WORDS_PICTURES",
-		},
-		{
-			title: "Recitar",
-			completed: false,
-			primary: true,
-			id: "READ",
-		},
-	];
+app.get("/hs-diary-tasks", async (req, res) => {
+	const { HSBaseDiaryTasks } = await collection.findOne({
+		email: "cem20903@gmail.com",
+	});
 
 	const currentDate = new Date().getDay();
 
-	const isDayToGame = currentDate === 5 || currentDate === 6;
+	const isDayToGame = currentDate === 5 || currentDate === 4;
 
 	if (isDayToGame) {
-		diaryTasks.push({
+		HSBaseDiaryTasks.push({
 			title: "Salida",
 			completed: false,
 			primary: true,
@@ -257,7 +233,7 @@ app.get("/hs-diary-tasks", (req, res) => {
 		});
 	}
 
-	res.json({ diaryTasks });
+	res.json({ diaryTasks: HSBaseDiaryTasks });
 });
 
 app.post("/add-hs-tasks", async (req, res) => {

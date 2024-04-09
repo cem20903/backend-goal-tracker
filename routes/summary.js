@@ -16,6 +16,8 @@ import {
 	getRecords,
 } from "../services/fitnessWorkout.js";
 
+import { uid } from "uid";
+
 const app = express();
 
 function calculateRecurrentPayLoan() {
@@ -62,16 +64,29 @@ function calculateStrikesHS(HSRecords, HSRecordsTracking) {
 	return average;
 }
 
-function calculateHSBooks(HSBooks) {
-	const totalPages = HSBooks.map((book) => book.total).reduce(
+function calculateHSBooks(HSBooks, HSBooksToRead) {
+	const buildCorrectResponse = HSBooksToRead.map((book) => {
+		const booksById = HSBooks.filter((recordBook) => recordBook.id === book.id);
+
+		if (booksById.length > 0) {
+			const bestRecordBook = booksById.sort(
+				(bookA, bookB) => bookB.current - bookA.current
+			)[0];
+
+			return bestRecordBook;
+		}
+
+		return book;
+	});
+
+	const totalPages = HSBooksToRead.map((book) => book.total).reduce(
 		(acc, pages) => acc + pages,
 		0
 	);
 
-	const totalCurrent = HSBooks.map((book) => book.current).reduce(
-		(acc, pages) => acc + pages,
-		0
-	);
+	const totalCurrent = buildCorrectResponse
+		.map((book) => book.current)
+		.reduce((acc, pages) => acc + pages, 0);
 
 	const average = Math.round(((totalCurrent * 100) / totalPages) * 100) / 100;
 
@@ -117,6 +132,7 @@ app.get("/summary", async (req, res) => {
 		HSRecords,
 		HSRecordsTracking,
 		HSBooks,
+		HSBooksToRead,
 	} = user;
 
 	const readPercantage = {
@@ -197,8 +213,10 @@ app.get("/summary", async (req, res) => {
 		calculateOthers(otherGoals, "HS"),
 		calculateOthers(otherGoals, "HS_OTHERS"),
 		calculateStrikesHS(HSRecords, HSRecordsTracking),
-		calculateHSBooks(HSBooks),
+		calculateHSBooks(HSBooks, HSBooksToRead),
 	];
+
+	console.log(calculateHSBooks(HSBooks, HSBooksToRead), "ESTO");
 
 	const hsAverage =
 		Math.round(
@@ -258,29 +276,19 @@ app.post("/save-summary", async (req, res) => {
 app.get("/summary-by", async (_, res) => {
 	const user = await collection.findOne({ email: "cem20903@gmail.com" });
 
-	const { otherGoals, englishRecords, diaryTasks } = user;
+	const { otherGoals } = user;
 
-	const currentWeek = getWeekNumber(new Date());
 	const tasksByWeek = getTasksNumbers(otherGoals);
 
-	// Diary Task
-	const diaryTasksWithWeekNumber = diaryTasks.map((task) => {
-		return {
-			...task,
-			week: getWeekNumber(task.date),
-		};
-	});
-
-	const diaryTasksByWeek = diaryTasksWithWeekNumber.filter(
-		(task) => task.week === currentWeek
-	);
-
-	const englishRecordsJoined = getWeekEnglishNumbers(englishRecords);
+	const allTasksWithMonth = otherGoals
+		.map((task) => {
+			return { ...task, month: new Date(task.finishedAt).getMonth() };
+		})
+		.filter((task) => task.completed);
 
 	res.json({
-		diaryTasksByWeek,
-		englishRecordsByWeek: englishRecordsJoined,
 		tasksByWeek,
+		allTasks: allTasksWithMonth,
 	});
 });
 
@@ -363,5 +371,59 @@ app.get("/info-ci", async (req, res) => {
 // 	"Habilidades Sociales": "HS",
 // 	Ingles: "ENGLISH",
 // };
+
+const listKW = [
+	"aprender a programar",
+	"estudiar programacion",
+	"estudia programacion",
+	"que estudiar para ser programador",
+	"estudiar programacion informatica",
+	"curso java script",
+	"curso de java script",
+	"trabajo de programador",
+	"curso de programador informatico",
+	"curso de programadores",
+	"trabajo programador",
+	"informatica programador",
+	"programador trabajo",
+	"trabajar de programador",
+	"desarrollo front end",
+	"desarrollo frontend",
+	"programacion front end",
+	"desarrollo web frontend",
+	"desarrollador web frontend",
+	"desarrollador web curso gratis",
+	"tecnologias front end",
+	"programador frontend",
+	"desarrollador front end",
+	"desarrollador frontend",
+	"desarrolladores front end",
+	"tecnologias front end",
+];
+
+app.get("/bulk-seo-text-and-others", async (req, res) => {
+	const user = await collection.findOne({
+		email: "cem20903@gmail.com",
+	});
+
+	listKW.forEach((keyword) => {
+		const newTask = {
+			title: `[Seo][Texto] ${keyword}`,
+			goalName: "PRO_WORK",
+			completed: false,
+			id: uid(),
+			finishedAt: null,
+		};
+
+		user.otherGoals.push(newTask);
+	});
+
+	await collection.replaceOne(
+		{ email: "cem20903@gmail.com" },
+		{ ...user, otherGoals: user.otherGoals }
+	);
+
+	res.json({});
+});
 
 export default app;
