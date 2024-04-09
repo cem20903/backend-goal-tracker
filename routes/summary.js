@@ -5,10 +5,8 @@ import {
 	calculateOthers,
 	calculateTotal,
 	calculateEnglish,
-	getWeekEnglishNumbers,
 	getTasksNumbers,
 } from "../utils/calculateSummary.js";
-import { getWeekNumber } from "../utils/dates.js";
 import comparativeWeeks from "../controllers/comparativeWeeks.js";
 import comparativeWeeeksAllTime from "../controllers/comparativeWeeeksAllTime.js";
 import {
