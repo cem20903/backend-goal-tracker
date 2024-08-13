@@ -33,6 +33,10 @@ app.use("/", routes.backoffice);
 app.use("/", routes.HS);
 app.use("/", routes.configs);
 
+app.route(["/mypanel"]).get((req, res) => {
+	res.sendFile(path.join(`${__dirname}/dist/index.html`));
+});
+
 // Start the server on port configured in .env (recommend port 8000)
 app.listen(process.env.PORT, () => {
 	console.log(`Servidor en puerto ${process.env.PORT}`);
