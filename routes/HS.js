@@ -37,14 +37,6 @@ app.get("/hs-books-records", async (req, res) => {
 	res.json({ books: buildCorrectResponse, average });
 });
 
-const recordOnFutureBackend = [
-	{
-		id: "DAYS_WORKED",
-		date: new Date(),
-		record: 0,
-	},
-];
-
 app.get("/hs-records", async (req, res) => {
 	let { HSRecords, HSRecordsTracking } = await collection.findOne({
 		email: "cem20903@gmail.com",
@@ -162,6 +154,8 @@ app.post("/set-hs-records", async (req, res) => {
 	let { HSRecordsTracking, HSRecords } = user;
 
 	let { currentRecords } = req.body;
+
+	console.log(currentRecords, "ESTO QUE ONDA?");
 
 	currentRecords = currentRecords.map((currentRecord) => {
 		return {

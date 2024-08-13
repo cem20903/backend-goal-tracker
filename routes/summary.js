@@ -25,7 +25,7 @@ function calculateRecurrentPayLoan() {
 
 const calculateEconomy = () => {
 	const payCurrent = calculateRecurrentPayLoan();
-	const saveMoneyPercentaje = 100;
+	const saveMoneyPercentaje = 80;
 	const debt = (payCurrent * 100) / 16934;
 	return Math.round(((saveMoneyPercentaje + debt) / 2) * 100) / 100;
 };
@@ -112,11 +112,24 @@ app.get("/info-economy", async (req, res) => {
 				current: calculateRecurrentPayLoan(),
 				percentaje: percentajeLoan,
 			},
-			{ title: "Ahorros", total: 5000, current: 5000, percentaje: 100 },
+			{ title: "Ahorros", total: 5000, current: 4000, percentaje: 80 },
 		],
 		average: calculateEconomy(),
 	};
 	res.json({ infoEconomy });
+});
+
+app.get("/info-debt", (req, res) => {
+	const mock = [
+		{
+			title: "Deuda",
+			total: "16934",
+			current: "371,9",
+			percentaje: 2,
+		},
+	];
+
+	res.json({ infoDebt: mock });
 });
 
 app.get("/summary", async (req, res) => {
@@ -148,10 +161,29 @@ app.get("/summary", async (req, res) => {
 		percentage: calculateOthers(otherGoals, "APP_CI"),
 		name: "APP_CI",
 	};
+
+	const appCIUsers = {
+		title: "Coeficiente Iron - Usuarios",
+		percentage: calculateOthers(otherGoals, "COEFICIENTE-IRON---USUARIOS"),
+		name: "COEFICIENTE-IRON---USUARIOS",
+	};
+
+	// const appCIPercentageAfterPublish = {
+	// 	title: "CI Usuarios",
+	// 	percentage: calculateOthers(otherGoals, "APP_CI_USERS"),
+	// 	name: "APP_CI_USERS",
+	// };
+
 	const goalTrackerPercentage = {
 		title: "App Goal Tracker",
 		percentage: calculateOthers(otherGoals, "GOAL_TRACKER"),
 		name: "GOAL_TRACKER",
+	};
+
+	const goalTrackerGenericPercentage = {
+		title: "Goal Tracker - Generico",
+		percentage: calculateOthers(otherGoals, "GOAL-TRACKER---GENERICO"),
+		name: "GOAL-TRACKER---GENERICO",
 	};
 
 	const { percentajeWeight, percentajeCI } = await getInfoFitnessWorkout();
@@ -214,8 +246,6 @@ app.get("/summary", async (req, res) => {
 		calculateHSBooks(HSBooks, HSBooksToRead),
 	];
 
-	console.log(calculateHSBooks(HSBooks, HSBooksToRead), "ESTO");
-
 	const hsAverage =
 		Math.round(
 			(hsTotal.reduce((acc, avg) => acc + avg, 0) / hsTotal.length) * 100
@@ -242,7 +272,9 @@ app.get("/summary", async (req, res) => {
 		instaAlfara,
 		englishPercentage,
 		appCIPercentage,
+		appCIUsers,
 		goalTrackerPercentage,
+		goalTrackerGenericPercentage,
 	];
 
 	const total = calculateTotal(results);
@@ -280,7 +312,10 @@ app.get("/summary-by", async (_, res) => {
 
 	const allTasksWithMonth = otherGoals
 		.map((task) => {
-			return { ...task, month: new Date(task.finishedAt).getMonth() };
+			return {
+				...task,
+				month: new Date(task.finishedAt).getMonth(),
+			};
 		})
 		.filter((task) => task.completed);
 
@@ -329,9 +364,9 @@ app.get("/info-ci", async (req, res) => {
 
 	const buildAerobicRecords = {
 		title: "Correr",
-		total: 25,
-		current: Math.round((aerobicRecords.record.seconds / 60) * 100) / 100,
-		percentaje: Math.round(aerobicRecords.ci * 100) / 100,
+		total: 5,
+		current: aerobicRecords.record,
+		percentaje: aerobicRecords.ci,
 	};
 
 	const buildPowerRecord = {

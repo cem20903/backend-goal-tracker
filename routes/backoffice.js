@@ -1,39 +1,143 @@
-
 import express from "express";
-import collection from '../server.js'
+import collection from "../server.js";
+import { uid } from "uid";
 
 const app = express();
 
+app.get("/backoffice/tasks", async (req, res) => {
+	const user = await collection.findOne({ email: "cem20903@gmail.com" });
 
-app.get('/backoffice/tasks', async (req, res) => {
+	const { otherGoals } = user;
 
+	res.json({ otherGoals });
+});
 
-  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
-  
-  const { otherGoals } = user
-  
-  res.json({otherGoals})
-})
+app.get("/backoffice/delete", async (req, res) => {
+	const { id } = req.query;
 
-app.get('/backoffice/delete', async (req, res) => {
+	const user = await collection.findOne({ email: "cem20903@gmail.com" });
 
-const { id } = req.query
+	const { otherGoals } = user;
 
+	const filterBy = otherGoals.filter((goal) => goal.id !== id);
 
-  const user = await collection.findOne({ email: 'cem20903@gmail.com' });
-  
-  const { otherGoals } = user
-  
-  
-  const filterBy = otherGoals.filter(goal => goal.id !== id)
-  
-  
-  await collection.replaceOne({ email: 'cem20903@gmail.com' }, {...user, otherGoals: filterBy })
-  
-  res.json({ id, filterBy: filterBy.length, otherGoals: otherGoals.length })
+	await collection.replaceOne(
+		{ email: "cem20903@gmail.com" },
+		{ ...user, otherGoals: filterBy }
+	);
 
-})
+	res.json({ id, filterBy: filterBy.length, otherGoals: otherGoals.length });
+});
 
+const dormitorioTasks = [
+	"Meter cable toma por dentro",
+	"Quitar cinta puerta",
+	"Quitar oxido puerta",
+	"Repintar puerta",
+	"Limpiar a fondo puerta",
+	"Quintar pintura cristal puerta",
+	"Quitar pintura puerta",
+	"Quitar cable telefono antiguo",
+	"Cambiar lampara pasillo",
+];
 
+const task = {
+	title: "",
+	goalName: "PRO_WORK",
+	completed: false,
+	finishedAt: null,
+	id: uid(),
+};
 
-export default app
+app.get("/add-bulk-tasks", async (req, res) => {
+	const user = await collection.findOne({ email: "cem20903@gmail.com" });
+
+	const { otherGoals } = user;
+
+	const numbers = Array.from({ length: 62 }, (_, index) => index + 1);
+
+	const taskBuilded = numbers.map((title) => {
+		return {
+			...task,
+			title: `[Instagram][${title}] Subir Video`,
+		};
+	});
+
+	const joinTasks = [...otherGoals, ...taskBuilded];
+
+	await collection.replaceOne(
+		{ email: "cem20903@gmail.com" },
+		{ ...user, otherGoals: joinTasks }
+	);
+
+	res.json({ taskBuilded });
+});
+
+const firstSections = [
+	{
+		title: "Coeficiente Iron",
+		section: "first",
+		type: "PERCENTAGE",
+		goalName: "IRON",
+	},
+];
+
+app.get("/backoffice/section", async (req, res) => {
+	const { name } = req.query;
+
+	const user = await collection.findOne({ email: "cem20903@gmail.com" });
+
+	const newSections = [...user.sections];
+
+	const filterSections = newSections.filter(
+		(section) => section.section === name
+	);
+
+	res.json({ sections: filterSections });
+});
+
+app.post("/backoffice/create-goal", async (req, res) => {
+	const { title, section, type } = req.body;
+
+	const user = await collection.findOne({ email: "cem20903@gmail.com" });
+
+	const newSections = [...user.sections];
+
+	const newGoal = {
+		title,
+		section,
+		type,
+		goalName: title.toUpperCase().split(" ").join("-"),
+	};
+
+	newSections.push(newGoal);
+
+	await collection.replaceOne(
+		{ email: "cem20903@gmail.com" },
+		{ ...user, sections: newSections }
+	);
+
+	res.json({});
+});
+
+app.get("/get-task-planificator", async (_, res) => {
+	const user = await collection.findOne({ email: "cem20903@gmail.com" });
+
+	res.json({ tasks: user.planificator });
+});
+
+app.post("/add-task-planificator", async (req, res) => {
+	const { task } = req.body;
+	const user = await collection.findOne({ email: "cem20903@gmail.com" });
+
+	const copy = [...user.planificator];
+
+	copy.push(task);
+
+	await collection.replaceOne(
+		{ email: "cem20903@gmail.com" },
+		{ ...user, planificator: copy }
+	);
+});
+
+export default app;

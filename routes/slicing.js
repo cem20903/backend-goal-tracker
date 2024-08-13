@@ -98,6 +98,13 @@ app.get("/slicing-get-tag-goal-tasks", async (req, res) => {
 		};
 	});
 
+	const tasksWithoutTags = {
+		tagName: "OTROS",
+		tasks: tasksByGoalName.filter((task) => !task.tagName),
+	};
+
+	tasksSeparateByTags.push(tasksWithoutTags);
+
 	// RECUERDA NO GUARDAR SOLO LOS DE HOUSE QUE BORRARAS EL RESTO
 	res.json({ allTags, tasksSeparateByTags });
 });
