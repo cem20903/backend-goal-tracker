@@ -1,8 +1,6 @@
 import fetch from "node-fetch";
 
-//const BACK_CI_URL = "https://fitnessworkout.onrender.com";
-
-const BACK_CI_URL = "http://localhost:4000";
+const BACK_CI_URL = "https://fitnessworkout.onrender.com";
 
 async function getRecords() {
 	return fetch(`${BACK_CI_URL}/gt/train/records`).then((res) => res.json());
