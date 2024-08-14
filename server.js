@@ -23,6 +23,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(__dirname + "/build"));
+app.use(express.static(__dirname + "/dist"));
 
 app.use("/", routes.books);
 app.use("/", routes.english);
@@ -33,7 +34,7 @@ app.use("/", routes.backoffice);
 app.use("/", routes.HS);
 app.use("/", routes.configs);
 
-app.route(["/mypanel"]).get((req, res) => {
+app.route("/app").get((req, res) => {
 	res.sendFile(path.join(`${__dirname}/dist/index.html`));
 });
 
