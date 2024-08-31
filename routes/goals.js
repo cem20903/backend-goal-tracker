@@ -1,6 +1,6 @@
 import express from "express";
 import collection from "../server.js";
-import { formatDate } from "../utils.js";
+
 const app = express();
 
 const baseRecords = [
@@ -36,18 +36,6 @@ app.get("/goals", (req, res) => {
 
 app.get("/diary-tasks", (req, res) => {
 	const diaryTasks = [
-		// {
-		//   title: 'Andar 8000 pasos',
-		//   completed: false,
-		//   primary: true,
-		//   id: 'STEPS_8000'
-		// },
-		// {
-		//   title: 'Andar 9000 pasos',
-		//   completed: false,
-		//   primary: false,
-		//   id: 'STEPS_9000'
-		// },
 		{
 			title: "Andar 10000 pasos",
 			completed: false,
@@ -120,11 +108,7 @@ app.get("/get-all-diary", async (req, res) => {
 		(taskA, taskB) => new Date(taskA.date) - new Date(taskB.date)
 	);
 
-	const temporalyRemoveKetoTask = tasksOrderedByDate.filter(
-		(task) => task.title !== "Ceto"
-	);
-
-	const tasksFilterByCurrentMonth = temporalyRemoveKetoTask.filter(
+	const tasksFilterByCurrentMonth = tasksOrderedByDate.filter(
 		(task) => new Date(task.date).getMonth() === new Date().getMonth()
 	);
 

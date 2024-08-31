@@ -33,6 +33,7 @@ app.use("/", routes.summary);
 app.use("/", routes.backoffice);
 app.use("/", routes.HS);
 app.use("/", routes.configs);
+app.use("/", routes.dailyRoutines);
 
 app.route("/app").get((req, res) => {
 	res.sendFile(path.join(`${__dirname}/dist/index.html`));

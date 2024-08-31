@@ -18,16 +18,20 @@ import { uid } from "uid";
 
 const app = express();
 
+const goal = 7000;
+const current = 4000;
+
 function calculateRecurrentPayLoan() {
 	const monthlyPaymentWithoutInterest = 188;
 	return (new Date().getMonth() + 1) * monthlyPaymentWithoutInterest;
 }
 
 const calculateEconomy = () => {
-	const payCurrent = calculateRecurrentPayLoan();
-	const saveMoneyPercentaje = 80;
-	const debt = (payCurrent * 100) / 16934;
-	return Math.round(((saveMoneyPercentaje + debt) / 2) * 100) / 100;
+	// const payCurrent = calculateRecurrentPayLoan();
+	// const saveMoneyPercentaje = 80;
+	// const debt = (payCurrent * 100) / 16934;
+	// return Math.round(((saveMoneyPercentaje + debt) / 2) * 100) / 100;
+	return Math.round(((current * 100) / goal) * 100) / 100;
 };
 
 function calculateStrikesHS(HSRecords, HSRecordsTracking) {
@@ -106,13 +110,18 @@ app.get("/info-economy", async (req, res) => {
 
 	const infoEconomy = {
 		tableInfo: [
+			// {
+			// 	title: "Deuda",
+			// 	total: totalLoanDebt,
+			// 	current: calculateRecurrentPayLoan(),
+			// 	percentaje: percentajeLoan,
+			// },
 			{
-				title: "Deuda",
-				total: totalLoanDebt,
-				current: calculateRecurrentPayLoan(),
-				percentaje: percentajeLoan,
+				title: "Ahorros",
+				total: goal,
+				current: current,
+				percentaje: Math.round(((current * 100) / goal) * 100) / 100,
 			},
-			{ title: "Ahorros", total: 5000, current: 4000, percentaje: 80 },
 		],
 		average: calculateEconomy(),
 	};
@@ -138,7 +147,6 @@ app.get("/summary", async (req, res) => {
 	const {
 		otherGoals,
 		books,
-		englishRecords,
 		booksToRead,
 		HSRecords,
 		HSRecordsTracking,
@@ -151,22 +159,22 @@ app.get("/summary", async (req, res) => {
 		percentage: calculateRead(books, booksToRead),
 		name: "READ",
 	};
-	const englishPercentage = {
-		title: "Ingles",
-		percentage: calculateEnglish(englishRecords),
-		name: "ENGLISH",
-	};
+	// const englishPercentage = {
+	// 	title: "Ingles",
+	// 	percentage: calculateEnglish(englishRecords),
+	// 	name: "ENGLISH",
+	// };
 	const appCIPercentage = {
 		title: "App Coeficiente Iron",
 		percentage: calculateOthers(otherGoals, "APP_CI"),
 		name: "APP_CI",
 	};
 
-	const appCIUsers = {
-		title: "Coeficiente Iron - Usuarios",
-		percentage: calculateOthers(otherGoals, "COEFICIENTE-IRON---USUARIOS"),
-		name: "COEFICIENTE-IRON---USUARIOS",
-	};
+	// const appCIUsers = {
+	// 	title: "Coeficiente Iron - Usuarios",
+	// 	percentage: calculateOthers(otherGoals, "COEFICIENTE-IRON---USUARIOS"),
+	// 	name: "COEFICIENTE-IRON---USUARIOS",
+	// };
 
 	// const appCIPercentageAfterPublish = {
 	// 	title: "CI Usuarios",
@@ -223,11 +231,11 @@ app.get("/summary", async (req, res) => {
 		percentage: calculateOthers(otherGoals, "INSTAALFARA"),
 		name: "INSTAGRAM_ALFARA",
 	};
-	const first = {
-		title: "First",
-		percentage: calculateOthers(otherGoals, "FIRST"),
-		name: "FIRST",
-	};
+	// const first = {
+	// 	title: "First",
+	// 	percentage: calculateOthers(otherGoals, "FIRST"),
+	// 	name: "FIRST",
+	// };
 	const sport = {
 		title: "Deporte",
 		percentage: calculateOthers(otherGoals, "SPORTS"),
@@ -265,14 +273,14 @@ app.get("/summary", async (req, res) => {
 		economy,
 		work,
 		personalBrand,
-		first,
+		// first,
 		house,
 		sport,
 		readPercantage,
 		instaAlfara,
-		englishPercentage,
+		// englishPercentage,
 		appCIPercentage,
-		appCIUsers,
+		// appCIUsers,
 		goalTrackerPercentage,
 		goalTrackerGenericPercentage,
 	];

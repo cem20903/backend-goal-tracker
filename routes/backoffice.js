@@ -29,24 +29,10 @@ app.get("/backoffice/delete", async (req, res) => {
 	res.json({ id, filterBy: filterBy.length, otherGoals: otherGoals.length });
 });
 
-const dormitorioTasks = [
-	"Meter cable toma por dentro",
-	"Quitar cinta puerta",
-	"Quitar oxido puerta",
-	"Repintar puerta",
-	"Limpiar a fondo puerta",
-	"Quintar pintura cristal puerta",
-	"Quitar pintura puerta",
-	"Quitar cable telefono antiguo",
-	"Cambiar lampara pasillo",
-];
-
 const task = {
-	title: "",
-	goalName: "PRO_WORK",
+	goalName: "HS_OTHERS",
 	completed: false,
 	finishedAt: null,
-	id: uid(),
 };
 
 app.get("/add-bulk-tasks", async (req, res) => {
@@ -54,12 +40,15 @@ app.get("/add-bulk-tasks", async (req, res) => {
 
 	const { otherGoals } = user;
 
-	const numbers = Array.from({ length: 62 }, (_, index) => index + 1);
+	const total = 32;
 
-	const taskBuilded = numbers.map((title) => {
+	const numbers = Array.from({ length: total }, (_, index) => index + 1);
+
+	const taskBuilded = numbers.map((number) => {
 		return {
 			...task,
-			title: `[Instagram][${title}] Subir Video`,
+			title: `[${number}][${total}] Inteligencia emocional y persuasión`,
+			id: uid(),
 		};
 	});
 
@@ -72,15 +61,6 @@ app.get("/add-bulk-tasks", async (req, res) => {
 
 	res.json({ taskBuilded });
 });
-
-const firstSections = [
-	{
-		title: "Coeficiente Iron",
-		section: "first",
-		type: "PERCENTAGE",
-		goalName: "IRON",
-	},
-];
 
 app.get("/backoffice/section", async (req, res) => {
 	const { name } = req.query;

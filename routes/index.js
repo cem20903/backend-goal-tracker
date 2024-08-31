@@ -6,6 +6,7 @@ import summary from "./summary.js";
 import backoffice from "./backoffice.js";
 import HS from "./HS.js";
 import configs from "./configs.js";
+import dailyRoutines from "./dailyRoutines.js";
 
 export default {
 	books,
@@ -16,4 +17,5 @@ export default {
 	backoffice,
 	HS,
 	configs,
+	dailyRoutines,
 };
