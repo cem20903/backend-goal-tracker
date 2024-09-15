@@ -40,26 +40,30 @@ app.get("/add-bulk-tasks", async (req, res) => {
 
 	const { otherGoals } = user;
 
-	const total = 32;
+	// const total = 32;
 
-	const numbers = Array.from({ length: total }, (_, index) => index + 1);
+	// const numbers = Array.from({ length: total }, (_, index) => index + 1);
 
-	const taskBuilded = numbers.map((number) => {
-		return {
-			...task,
-			title: `[${number}][${total}] Inteligencia emocional y persuasión`,
-			id: uid(),
-		};
-	});
+	// const taskBuilded = numbers.map((number) => {
+	// 	return {
+	// 		...task,
+	// 		title: `[${number}][${total}] Inteligencia emocional y persuasión`,
+	// 		id: uid(),
+	// 	};
+	// });
 
-	const joinTasks = [...otherGoals, ...taskBuilded];
-
-	await collection.replaceOne(
-		{ email: "cem20903@gmail.com" },
-		{ ...user, otherGoals: joinTasks }
+	const PRO_WORKS_NOT_COMPLETED_TASKS = otherGoals.filter(
+		(task) => !(task.goalName === "PRO_WORK" && !task.completed)
 	);
 
-	res.json({ taskBuilded });
+	// const joinTasks = [...otherGoals, ...taskBuilded];
+
+	// await collection.replaceOne(
+	// 	{ email: "cem20903@gmail.com" },
+	// 	{ ...user, otherGoals: PRO_WORKS_NOT_COMPLETED_TASKS }
+	// );
+
+	res.json({ PRO_WORKS_NOT_COMPLETED_TASKS });
 });
 
 app.get("/backoffice/section", async (req, res) => {

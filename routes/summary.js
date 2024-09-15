@@ -19,7 +19,7 @@ import { uid } from "uid";
 const app = express();
 
 const goal = 7000;
-const current = 4000;
+const current = 3100;
 
 function calculateRecurrentPayLoan() {
 	const monthlyPaymentWithoutInterest = 188;
