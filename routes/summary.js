@@ -19,18 +19,8 @@ import { uid } from "uid";
 const app = express();
 
 const goal = 7000;
-const current = 3100;
 
-function calculateRecurrentPayLoan() {
-	const monthlyPaymentWithoutInterest = 188;
-	return (new Date().getMonth() + 1) * monthlyPaymentWithoutInterest;
-}
-
-const calculateEconomy = () => {
-	// const payCurrent = calculateRecurrentPayLoan();
-	// const saveMoneyPercentaje = 80;
-	// const debt = (payCurrent * 100) / 16934;
-	// return Math.round(((saveMoneyPercentaje + debt) / 2) * 100) / 100;
+const calculateEconomy = (current) => {
 	return Math.round(((current * 100) / goal) * 100) / 100;
 };
 
@@ -101,29 +91,20 @@ app.get("/info-weight", async (req, res) => {
 });
 
 app.get("/info-economy", async (req, res) => {
-	const totalLoanDebt = 16934;
-	const percentajeLoan =
-		Math.round(((calculateRecurrentPayLoan() * 100) / totalLoanDebt) * 100) /
-		100;
-
-	16934 - 100;
+	const { currentSaves } = await collection.findOne({
+		email: "cem20903@gmail.com",
+	});
 
 	const infoEconomy = {
 		tableInfo: [
-			// {
-			// 	title: "Deuda",
-			// 	total: totalLoanDebt,
-			// 	current: calculateRecurrentPayLoan(),
-			// 	percentaje: percentajeLoan,
-			// },
 			{
 				title: "Ahorros",
 				total: goal,
-				current: current,
-				percentaje: Math.round(((current * 100) / goal) * 100) / 100,
+				current: currentSaves,
+				percentaje: Math.round(((currentSaves * 100) / goal) * 100) / 100,
 			},
 		],
-		average: calculateEconomy(),
+		average: calculateEconomy(currentSaves),
 	};
 	res.json({ infoEconomy });
 });
@@ -152,6 +133,7 @@ app.get("/summary", async (req, res) => {
 		HSRecordsTracking,
 		HSBooks,
 		HSBooksToRead,
+		currentSaves,
 	} = user;
 
 	const readPercantage = {
@@ -159,28 +141,12 @@ app.get("/summary", async (req, res) => {
 		percentage: calculateRead(books, booksToRead),
 		name: "READ",
 	};
-	// const englishPercentage = {
-	// 	title: "Ingles",
-	// 	percentage: calculateEnglish(englishRecords),
-	// 	name: "ENGLISH",
-	// };
+
 	const appCIPercentage = {
 		title: "App Coeficiente Iron",
 		percentage: calculateOthers(otherGoals, "APP_CI"),
 		name: "APP_CI",
 	};
-
-	// const appCIUsers = {
-	// 	title: "Coeficiente Iron - Usuarios",
-	// 	percentage: calculateOthers(otherGoals, "COEFICIENTE-IRON---USUARIOS"),
-	// 	name: "COEFICIENTE-IRON---USUARIOS",
-	// };
-
-	// const appCIPercentageAfterPublish = {
-	// 	title: "CI Usuarios",
-	// 	percentage: calculateOthers(otherGoals, "APP_CI_USERS"),
-	// 	name: "APP_CI_USERS",
-	// };
 
 	const goalTrackerPercentage = {
 		title: "App Goal Tracker",
@@ -211,7 +177,7 @@ app.get("/summary", async (req, res) => {
 
 	const economy = {
 		title: "Economia (beta) ",
-		percentage: calculateEconomy(),
+		percentage: calculateEconomy(currentSaves),
 		name: "ECONOMY",
 	};
 
