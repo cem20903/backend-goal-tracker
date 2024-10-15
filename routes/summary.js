@@ -18,7 +18,7 @@ import { uid } from "uid";
 
 const app = express();
 
-const goal = 7000;
+const goal = 4400;
 
 const calculateEconomy = (current) => {
 	return Math.round(((current * 100) / goal) * 100) / 100;
