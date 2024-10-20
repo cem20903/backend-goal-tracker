@@ -155,7 +155,7 @@ app.get("/summary", async (req, res) => {
 	};
 
 	const goalTrackerGenericPercentage = {
-		title: "Goal Tracker - Generico",
+		title: "Goal Tracker - 2025",
 		percentage: calculateOthers(otherGoals, "GOAL-TRACKER---GENERICO"),
 		name: "GOAL-TRACKER---GENERICO",
 	};
