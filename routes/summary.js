@@ -202,11 +202,11 @@ app.get("/summary", async (req, res) => {
 	// 	percentage: calculateOthers(otherGoals, "FIRST"),
 	// 	name: "FIRST",
 	// };
-	const sport = {
-		title: "Deporte",
-		percentage: calculateOthers(otherGoals, "SPORTS"),
-		name: "SPORTS",
-	};
+	// const sport = {
+	// 	title: "Deporte",
+	// 	percentage: calculateOthers(otherGoals, "SPORTS"),
+	// 	name: "SPORTS",
+	// };
 	const house = {
 		title: "Cosas de Casa",
 		percentage: calculateOthers(otherGoals, "HOUSE"),
@@ -241,7 +241,7 @@ app.get("/summary", async (req, res) => {
 		personalBrand,
 		// first,
 		house,
-		sport,
+		// sport,
 		readPercantage,
 		instaAlfara,
 		// englishPercentage,
