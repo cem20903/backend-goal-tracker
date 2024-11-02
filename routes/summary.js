@@ -4,7 +4,6 @@ import { calculateRead } from "../utils/calculateBooks.js";
 import {
 	calculateOthers,
 	calculateTotal,
-	calculateEnglish,
 	getTasksNumbers,
 } from "../utils/calculateSummary.js";
 import comparativeWeeks from "../controllers/comparativeWeeks.js";
@@ -41,7 +40,7 @@ function calculateStrikesHS(HSRecords, HSRecordsTracking) {
 		return {
 			...record,
 			record: sumTotal,
-			percentaje,
+			percentaje: percentaje > 100 ? 100 : percentaje,
 			total: record.record,
 		};
 	});

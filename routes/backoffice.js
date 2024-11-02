@@ -19,14 +19,16 @@ app.get("/backoffice/delete", async (req, res) => {
 
 	const { otherGoals } = user;
 
-	const filterBy = otherGoals.filter((goal) => goal.id !== id);
+	const filterBy = otherGoals.filter(
+		(item) => !(item.goalName === "HS_OTHERS" && !item.completed)
+	);
 
 	await collection.replaceOne(
 		{ email: "cem20903@gmail.com" },
 		{ ...user, otherGoals: filterBy }
 	);
 
-	res.json({ id, filterBy: filterBy.length, otherGoals: otherGoals.length });
+	res.json({ id, filterBy: filterBy });
 });
 
 const task = {
